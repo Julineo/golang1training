@@ -12,3 +12,6 @@ $ go run main.go t1 t2 t3
 & go build
 ./1.5 > out.gif
 
+1.6
+& go build
+./1.6 > out.gif
