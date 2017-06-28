@@ -15,3 +15,7 @@ $ go run main.go t1 t2 t3
 1.6
 & go build
 ./1.6 > out.gif
+
+1.7
+$ go build
+./1.7 http://gopl.io
