@@ -19,3 +19,8 @@ $ go run main.go t1 t2 t3
 1.7
 $ go build
 ./1.7 http://gopl.io
+
+1.8
+$ go build
+./1.8 http://gopl.io
+./1.8 gopl.io
