@@ -24,3 +24,12 @@ $ go build
 $ go build
 ./1.8 http://gopl.io
 ./1.8 gopl.io
+
+1.9
+$ go build
+./1.9 http://gopl.io
+./1.9 gopl.io
+
+1.10
+$ go build
+./1.10 http://gopl.io
