@@ -33,3 +33,9 @@ $ go build
 1.10
 $ go build
 ./1.10 http://gopl.io
+
+1.11
+./1.10 http://Google.Com http://Youtube.Com http://Facebook.Com http://Wikipedia.Org http://Yahoo.Com http://Twitter.Com http://Amazon.Com http://Instagram.Com
+
+1.12
+$ go run main.go
