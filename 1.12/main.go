@@ -16,8 +16,11 @@ import (
 	"io"
 	"math"
 	"math/rand"
+	"fmt"
+	"net/url"
+	//"strconv"
 )
-
+//https://golang.org/pkg/net/url/#Values
 var palette = []color.Color{color.White, color.Black}
 
 const (
@@ -27,13 +30,33 @@ const (
 
 func main() {
 	handler := func(w http.ResponseWriter, r *http.Request) {
-			lissajous(w)
+			fmt.Println(r.URL.RawQuery)
+    			m, _ := url.ParseQuery(r.URL.RawQuery)
+    			fmt.Println(m)
+			/*cycles, err := strconv.ParseFloat(m["cycles"][0], 64)
+    			check(err)
+			res, err := strconv.ParseFloat(m["res"][0], 64)
+    			check(err)
+			size, err := strconv.Atoi(m["size"][0])
+    			check(err)
+			nframes, err := strconv.Atoi(m["nframes"][0])
+    			check(err)
+			delay, err := strconv.Atoi(m["delay"][0])
+    			check(err)*/
+			lissajous(w/*, cycles, res, size, nframes, delay*/)
 	}
 	http.HandleFunc("/", handler) // each request calls handler
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
-func lissajous(out io.Writer) {
+func lissajous(out io.Writer/*, cycles int, res float64, size int, nframes int, delay int*/) {
+	/*const (
+		cycles  = 5     // number of complete x oscillator revolutions
+		res     = 0.001 // angular resolution
+		size    = 100   // image canvas covers [-size..+size]
+		nframes = 64    // number of animation frames
+		delay   = 8     // delay between frames in 10ms units
+	)*/
 	const (
 		cycles  = 5     // number of complete x oscillator revolutions
 		res     = 0.001 // angular resolution
@@ -58,5 +81,11 @@ func lissajous(out io.Writer) {
 		anim.Image = append(anim.Image, img)
 	}
 	gif.EncodeAll(out, &anim) // NOTE: ignoring encoding errors
+}
+
+func check(err error) {
+    if err != nil {
+        panic(err)
+    }
 }
 //!-

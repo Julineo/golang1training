@@ -39,3 +39,5 @@ $ go build
 
 1.12
 $ go run main.go
+http://localhost:8000/?cycles=20;res=0.001;size=100;nframes=64;delay=8
+
