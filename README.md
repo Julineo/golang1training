@@ -41,3 +41,16 @@ $ go build
 $ go run main.go
 http://localhost:8000/?cycles=20;res=0.001;size=100;nframes=64;delay=8
 
+2.1
+//add $GOPATH variable:
+GOPATH="/home/alex/go"
+//test the package
+tempconv$ go build
+//install the package
+tempconv$ go install
+//run code from the package
+go run main.go
+
+
+
+
