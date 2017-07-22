@@ -51,6 +51,11 @@ tempconv$ go install
 //run code from the package
 go run main.go
 
+2.2
+//using package without compiling:
+go build main.go
+./main -40
+
 
 
 
