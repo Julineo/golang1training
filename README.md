@@ -55,7 +55,8 @@ go run main.go
 //using package without compiling:
 go build main.go
 ./main -40
-
+//altarnative way without build:
+go run main.go 30 50
 
 
 
