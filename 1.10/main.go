@@ -26,7 +26,7 @@ func main() {
 	//writing to a file
 	f, err := os.OpenFile("/tmp/yourfile", os.O_APPEND|os.O_WRONLY, 0600)//try to open file
 	if err != nil {
-    		f, err := os.Create("/tmp/yourfile")//create new file if can't open
+    		f, err = os.Create("/tmp/yourfile")//create new file if can't open
 	}
     	check(err)
     	defer f.Close()

@@ -58,5 +58,11 @@ go build main.go
 //altarnative way without build:
 go run main.go 30 50
 
+3.1
+//using SVG standard for XML line drawings (advanced)
+go run main.go
+//result file is in tmp/yourfile folder
+//insert result here:
+https://www.w3schools.com/graphics/tryit.asp?filename=trysvg_myfirst
 
 
