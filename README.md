@@ -66,4 +66,9 @@ go run main.go
 https://www.w3schools.com/graphics/tryit.asp?filename=trysvg_myfirst
 
 3.2
+//same as 3.1 
+//eggbox folder
+//moguls folder
+//saddle folder
+
 
