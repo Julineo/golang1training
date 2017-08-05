@@ -73,7 +73,7 @@ func corner(i, j int) (float64, float64) {
 }
 
 func f(x, y float64) float64 {
-	return math.Sin(x) * math.Sin(y)
+	return math.Abs(math.Sin(x) * math.Sin(y))
 }
 
 func check(err error) {
