@@ -42,9 +42,18 @@ func main() {
 	for i := 0; i < cells; i++ {
 		for j := 0; j < cells; j++ {
 			ax, ay := corner(i+1, j)
+			if math.IsNaN(ax) ||  math.IsInf(ax, 0) {continue} 
+			if math.IsNaN(ay) ||  math.IsInf(ay, 0) {continue} //skip polygon if it has non-finite value
 			bx, by := corner(i, j)
+			if math.IsNaN(bx) ||  math.IsInf(bx, 0) {continue} 
+			if math.IsNaN(by) ||  math.IsInf(by, 0) {continue} //skip polygon if it has non-finite value
 			cx, cy := corner(i, j+1)
+			if math.IsNaN(cx) ||  math.IsInf(cx, 0) {continue} 
+			if math.IsNaN(cy) ||  math.IsInf(cy, 0) {continue} //skip polygon if it has non-finite value
 			dx, dy := corner(i+1, j+1)
+			if math.IsNaN(dx) ||  math.IsInf(dx, 0) {continue} 
+			if math.IsNaN(dy) ||  math.IsInf(dy, 0) {continue} //skip polygon if it has non-finite value
+
 			_, err = fmt.Fprintf(w, "<polygon points='%g,%g %g,%g %g,%g %g,%g'/>\n",
 				ax, ay, bx, by, cx, cy, dx, dy)
 			check(err)
