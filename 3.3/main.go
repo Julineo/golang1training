@@ -19,7 +19,7 @@ const (
 	cells         = 100                 // number of grid cells
 	xyrange       = 30.0                // axis ranges (-xyrange..+xyrange)
 	xyscale       = width / 2 / xyrange // pixels per x or y unit
-	zscale        = height * 0.4        // pixels per z unit
+	zscale        = height * 0.1      // pixels per z unit
 	angle         = math.Pi / 6         // angle of x, y axes (=30°)
 )
 
@@ -39,19 +39,28 @@ func main() {
 		"style='stroke: grey; fill: white; stroke-width: 0.7' "+
 		"width='%d' height='%d'>", width, height)
 	check(err)
-	var minZ float64 = -0
-	var maxZ float64 = 0
+	//calculating z max and z min
+	var zmax, zmin, z float64 = 0, -0, 0
 	for i := 0; i < cells; i++ {
 		for j := 0; j < cells; j++ {
-			ax, ay, _ := corner(i+1, j)
+			_, _, z = corner(+i, j)
+			if math.IsNaN(z) ||  math.IsInf(z, 0) {continue}
+			if z > zmax {
+				zmax = z
+			}
+			if z < zmin {
+				zmin = z
+			}
+		}
+	}
+	for i := 0; i < cells; i++ {
+		for j := 0; j < cells; j++ {
+			ax, ay, z := corner(i+1, j)
 			if math.IsNaN(ax) ||  math.IsInf(ax, 0) {continue} 
 			if math.IsNaN(ay) ||  math.IsInf(ay, 0) {continue} //skip polygon if it has non-finite value
-			bx, by, z := corner(i, j) //maximum visible z will be at this point
+			bx, by, _ := corner(i, j)
 			if math.IsNaN(bx) ||  math.IsInf(bx, 0) {continue} 
 			if math.IsNaN(by) ||  math.IsInf(by, 0) {continue} //skip polygon if it has non-finite value
-			if math.IsNaN(z) ||  math.IsInf(z, 0) {continue}
-			if minZ > z {minZ = z}
-			if maxZ < z {maxZ = z}
 			cx, cy, _ := corner(i, j+1)
 			if math.IsNaN(cx) ||  math.IsInf(cx, 0) {continue} 
 			if math.IsNaN(cy) ||  math.IsInf(cy, 0) {continue} //skip polygon if it has non-finite value
@@ -59,14 +68,13 @@ func main() {
 			if math.IsNaN(dx) ||  math.IsInf(dx, 0) {continue} 
 			if math.IsNaN(dy) ||  math.IsInf(dy, 0) {continue} //skip polygon if it has non-finite value
 
-			_, err = fmt.Fprintf(w, "<polygon points='%g,%g %g,%g %g,%g %g,%g' stroke='#ff0000'/>\n",
-				ax, ay, bx, by, cx, cy, dx, dy)
+			_, err = fmt.Fprintf(w, "<polygon points='%g,%g %g,%g %g,%g %g,%g' stroke='%s'/>\n",
+				ax, ay, bx, by, cx, cy, dx, dy, color(z, zmax, zmin))
 			check(err)
 		}
 	}
 	_, err = fmt.Fprintf(w, "</svg>")
     	check(err)
-	_, err = fmt.Fprintf(w, " minZ: ", minZ, " maxZ: ", maxZ, "\n")
     	w.Flush()
 }
 
@@ -94,4 +102,23 @@ func check(err error) {
         panic(err)
     }
 }
-//!-
+
+//extrapolation function
+func ys(x0, y0, x1, y1, x float64) float64 {
+	return y0 + (x - x0)/(x1 - x0) * (y1 - y0)
+}
+
+//function to convert z coordinate into color from #ff0000 to #0000ff
+func color(z, zmax, zmin float64) string {
+	blue := 255
+	red := 255
+	if z > 0 {
+		red = int(ys(0,255,zmax,0, z))
+		//if red < 0 {red = 0}
+		//if red > 255 {red = 255}
+	} else {
+		blue = int(ys(zmin,0,0,255, z))
+		//if blue < 0 {blue = 0}
+	}
+	return "#" + string(fmt.Sprintf("%02x", blue)) + "00" + string(fmt.Sprintf("%02x", red))
+}
