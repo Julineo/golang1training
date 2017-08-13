@@ -76,5 +76,5 @@ https://www.w3schools.com/graphics/tryit.asp?filename=trysvg_myfirst
 
 3.4
 go run main.go
-http://localhost:8000/
+http://localhost:8000/?width=1000;height=540;cells=49;fill=black
 

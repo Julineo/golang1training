@@ -12,26 +12,40 @@ import (
 	"math"
 	"net/http"
 	"log"
+	"strconv"
+	"net/url"
 )
 
-const (
-	width, height = 600, 320            // canvas size in pixels
-	cells         = 100                 // number of grid cells
+const (                
 	xyrange       = 30.0                // axis ranges (-xyrange..+xyrange)
-	xyscale       = width / 2 / xyrange // pixels per x or y unit
-	zscale        = height * 0.1      // pixels per z unit
 	angle         = math.Pi / 6         // angle of x, y axes (=30°)
 )
 
 var sin30, cos30 = math.Sin(angle), math.Cos(angle) // sin(30°), cos(30°)
+var width, height, cells int// size, number of grid cells
+var xyscale, zscale float64
 
 func main() {
 	handler := func(w http.ResponseWriter, r *http.Request) {
+				
+		m, err := url.ParseQuery(r.URL.RawQuery)
+		//fmt.Println(r.URL.RawQuery)
+		width, err = strconv.Atoi(m["width"][0])
+	    	check(err)
+		height, err = strconv.Atoi(m["height"][0])
+	    	check(err)
+		cells, err = strconv.Atoi(m["cells"][0])
+	    	check(err)
+		fill := m["fill"][0]
+				//res, err := strconv.ParseFloat(m["res"][0], 64)
+	    			//check(err)
+		xyscale	= float64(width) / 2 / xyrange // pixels per x or y unit
+		zscale	= float64(height) * 0.1      // pixels per z unit
 
 		w.Header().Set("Content-Type", "image/svg+xml")
-		_, err := fmt.Fprintf(w, "<svg xmlns='http://www.w3.org/2000/svg' "+
-			"style='stroke: grey; fill: white; stroke-width: 0.7' "+
-			"width='%d' height='%d'>", width, height)
+		_, err = fmt.Fprintf(w, "<svg xmlns='http://www.w3.org/2000/svg' "+
+			"style='stroke: grey; fill: %s; stroke-width: 0.7' "+
+			"width='%d' height='%d'>", fill, width, height)
 		check(err)
 		//calculating z max and z min
 		var zmax, zmin, z float64 = 0, -0, 0
@@ -77,15 +91,15 @@ func main() {
 
 func corner(i, j int) (float64, float64, float64) {
 	// Find point (x,y) at corner of cell (i,j).
-	x := xyrange * (float64(i)/cells - 0.5)
-	y := xyrange * (float64(j)/cells - 0.5)
+	x := xyrange * (float64(i)/float64(cells) - 0.5)
+	y := xyrange * (float64(j)/float64(cells) - 0.5)
 
 	// Compute surface height z.
 	z := f(x, y)
 
 	// Project (x,y,z) isometrically onto 2-D SVG canvas (sx,sy).
-	sx := width/2 + (x-y)*cos30*xyscale
-	sy := height/2 + (x+y)*sin30*xyscale - z*zscale
+	sx := float64(width)/2 + (x-y)*cos30*xyscale
+	sy := float64(height)/2 + (x+y)*sin30*xyscale - z*zscale
 	return sx, sy, z
 }
 
