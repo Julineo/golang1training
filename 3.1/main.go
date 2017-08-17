@@ -27,9 +27,9 @@ var sin30, cos30 = math.Sin(angle), math.Cos(angle) // sin(30°), cos(30°)
 
 func main() {
 	//writing to a file
-	f, err := os.OpenFile("/tmp/yourfile", os.O_APPEND|os.O_WRONLY, 0600)//try to open file
+	f, err := os.OpenFile("D:/Projects/GoProjects/src/golang1training/3.1/yourfile", os.O_APPEND|os.O_WRONLY, 0600)//try to open file
 	if err != nil {
-		f, err = os.Create("/tmp/yourfile")//create new file if can't open
+		f, err = os.Create("D:/Projects/GoProjects/src/golang1training/3.1/yourfile")//create new file if can't open
 	}
 	check(err)
 	defer f.Close()
