@@ -14,6 +14,7 @@ import (
 	"math/cmplx"
 	"net/http"
 	"log"
+	"fmt"
 )
 
 func main() {
@@ -22,15 +23,26 @@ func main() {
 		width, height          = 1024, 1024
 	)
 
+	widthP := width*2
+	heightP := width*2
+
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		img := image.NewRGBA(image.Rect(0, 0, width, height))
-		for py := 0; py < height; py++ {
-			y := float64(py)/height*(ymax-ymin) + ymin
-			for px := 0; px < width; px++ {
-				x := float64(px)/width*(xmax-xmin) + xmin
-				z := complex(x, y)
+		for py := 0; py < heightP; py = py+2 {
+			y1 := float64(py)/float64(heightP*(ymax-ymin) + ymin)
+			//y2 := float64(py+1)/float64(heightP*(ymax-ymin) + ymin)
+			for px := 0; px < widthP; px = px+2 {
+				x1 := float64(px)/float64(widthP*(xmax-xmin) + xmin)
+				//x2 := float64(px+1)/float64(widthP*(xmax-xmin) + xmin)
+				z11 := complex(x1, y1)
+				//z12 := complex(x1, y2)
+				//z21 := complex(x2, y1)
+				//z22 := complex(x2, y2)
 				// Image point (px, py) represents complex value z.
-				img.Set(px, py, mandelbrot(z))
+				img.Set(px, py, mandelbrot(z11))
+				//c := mandelbrot(z11)
+				//Y, Cb, Cr
+				fmt.Printf("%v\n",z11)
 			}
 		}
 		
