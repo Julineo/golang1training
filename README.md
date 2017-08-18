@@ -78,3 +78,5 @@ https://www.w3schools.com/graphics/tryit.asp?filename=trysvg_myfirst
 go run main.go
 http://localhost:8000/?width=1000;height=540;cells=49;fill=black
 
+3.5
+
