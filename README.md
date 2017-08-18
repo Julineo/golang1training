@@ -79,4 +79,8 @@ go run main.go
 http://localhost:8000/?width=1000;height=540;cells=49;fill=black
 
 3.5
+go run main.go
 
+3.6
+go run main.go
+http://localhost:8000/
