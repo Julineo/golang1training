@@ -84,7 +84,8 @@ func mandelbrot(z complex128) color.Color {
 			//return acosRGBA(v)
 			//return acos(v)
 			//return sqrt(v)
-			return newton(v)
+			//return newton(v)
+			return newtonColor(v)
 		}
 	}
 	return color.Black
@@ -131,14 +132,14 @@ func newton(z complex128) color.Color {
 	return color.Black
 }
 
-
 func newtonColor(z complex128) color.Color {
 	const iterations = 37
 	const contrast = 7
 	for i := uint8(0); i < iterations; i++ {
 		z -= (z - 1/(z*z*z)) / 4
 		if cmplx.Abs(z*z*z*z-1) < 1e-6 {
-			return color.Gray{255 - contrast*i}
+			return color.RGBA{uint8(real(z)*128) + 127,uint8(imag(z)*128) + 127,uint8(math.Abs(float64(real(z)+imag(z))))*128,255}
 		}
 	}
-
+	return color.Black
+}
