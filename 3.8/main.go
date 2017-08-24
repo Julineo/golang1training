@@ -27,7 +27,11 @@ func main() {
 	width, height := 1024 * zoom, 1024 * zoom
 	widthP, heightP := width * 2, height * 2
 
-	superSamples := make([][]color.Color,widthP)
+	//creating multidimensional structure
+	superSamples := make([][]color.Color, heightP)
+    for i := range superSamples {
+        superSamples[i] = make([]color.Color, widthP)
+    }
 
 	for py := 0; py < heightP; py++ {
 		y := float64(py) / float64(heightP) * (ymax - ymin) + ymin
