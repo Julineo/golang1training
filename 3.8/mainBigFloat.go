@@ -22,7 +22,7 @@ import (
 func main() {
 	const (
 		xmin, ymin, xmax, ymax = -2, -2, +2, +2
-		zoom int = 1
+		zoom = 1
 		width, height = 1024 * zoom, 1024 * zoom
 		widthP, heightP = width * 2, height * 2
 	)
@@ -41,8 +41,8 @@ func main() {
 		y := new(big.Float).Quo(pyb, heightPb)
 		y.Mul(y,ty)
 		for px := 0; px < widthP; px++ {
-			pxb, widthPb := big.NewFloat(float64(py)), big.NewFloat(float64(widthP))
-		    x := new(big.Float).Quo(pxb, widthPb)// * (xmax - xmin) + xmin
+			pxb, widthPb := big.NewFloat(float64(px)), big.NewFloat(float64(widthP))
+		    x := new(big.Float).Quo(pxb, widthPb)
 			x.Mul(x,tx)
 		    xF64,_ := x.Float64()
 			yF64,_ := y.Float64()

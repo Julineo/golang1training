@@ -21,11 +21,10 @@ import (
 func main() {
 	const (
 		xmin, ymin, xmax, ymax = -2, -2, +2, +2
+		zoom int = 1
+		width, height = 1024 * zoom, 1024 * zoom
+		widthP, heightP = width * 2, height * 2
 	)
-	
-	var zoom int = 1
-	width, height := 1024 * zoom, 1024 * zoom
-	widthP, heightP := width * 2, height * 2
 
 	//creating multidimensional structure
 	superSamples := make([][]color.Color, heightP)
