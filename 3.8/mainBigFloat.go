@@ -22,38 +22,31 @@ import (
 func main() {
 	const (
 		xmin, ymin, xmax, ymax = -2, -2, +2, +2
+		zoom int = 1
+		width, height = 1024 * zoom, 1024 * zoom
+		widthP, heightP = width * 2, height * 2
 	)
 	
-	zoom := big.NewInt(1)
-	widthT := big.NewInt(1024) 
-	heightT := big.NewInt(1024)
-	width := new(big.Int)
-	height := new(big.Int)
-	width.Mul(widthT, zoom)
-	height.Mul(heightT, zoom)
-	widthP := new(big.Int)
-	heightP := new(big.Int)
-	two := big.NewInt(2)
-	widthP.Mul(width, two)
-	heightP.Mul(height, two)
-
 	//creating multidimensional structure
-	superSamples := make([][]color.Color, heightP.Int64())
+	superSamples := make([][]color.Color, heightP)
     for i := range superSamples {
-        superSamples[i] = make([]color.Color, widthP.Int64())
+        superSamples[i] = make([]color.Color, widthP)
     }
 
-	y := new(big.Float)
-	x := new(big.Float)
-	for py := big.NewInt(0); py.Int64() < heightP.Int64(); py.Add(py, py) {
-		//pyB := new(big.Float).SetInt(py)
-		//heightPB := new(big.Float).SetInt(heightP)
-		y.Div(pyB, heightPB)// * (ymax - ymin) + ymin
+	ty := big.NewFloat(float64((ymax - ymin) + ymin))
+	tx := big.NewFloat(float64((xmax - xmin) + xmin))
+	
+	for py := 0; py < heightP; py++ {
+		pyb, heightPb := big.NewFloat(float64(py)), big.NewFloat(float64(heightP))
+		y := new(big.Float).Quo(pyb, heightPb)
+		y.Mul(y,ty)
 		for px := 0; px < widthP; px++ {
-			//pxB := new(big.Float).SetInt(px)
-			//widthP := new(big.Float).SetInt(widthP)
-		    x := pxB / widthP * (xmax - xmin) + xmin
-		    z := complex(x, y)
+			pxb, widthPb := big.NewFloat(float64(py)), big.NewFloat(float64(widthP))
+		    x := new(big.Float).Quo(pxb, widthPb)// * (xmax - xmin) + xmin
+			x.Mul(x,tx)
+		    xF64,_ := x.Float64()
+			yF64,_ := y.Float64()
+			z := complex(xF64, yF64)
 
 		    superSamples[px][py] = mandelbrot(z)
 		}
@@ -96,14 +89,14 @@ func main() {
 
 }
 
-func mandelbrot(z complex64) color.Color {
+func mandelbrot(z complex128) color.Color {
 	const iterations = 200
 	const contrast = 15
 
-	var v complex64
+	var v complex128
 	for n := uint8(0); n < iterations; n++ {
 		v = v*v + z
-		if cmplx.Abs(complex128(v)) > 2 {
+		if cmplx.Abs(v) > 2 {
 			//return acosRGBA(v)
 			//return acos(v)
 			//return sqrt(v)
@@ -155,12 +148,12 @@ func newton(z complex128) color.Color {
 	return color.Black
 }
 
-func newtonColor(z complex64) color.Color {
+func newtonColor(z complex128) color.Color {
 	const iterations = 37
 	const contrast = 7
 	for i := uint8(0); i < iterations; i++ {
 		z -= (z - 1/(z*z*z)) / 4
-		if cmplx.Abs(complex128(z*z*z*z-1)) < 1e-6 {
+		if cmplx.Abs(z*z*z*z-1) < 1e-6 {
 			return color.RGBA{uint8(real(z)*128) + 127,uint8(imag(z)*128) + 127,uint8(math.Abs(float64(real(z)+imag(z))))*128,255}
 		}
 	}
