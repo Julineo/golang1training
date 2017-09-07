@@ -83,7 +83,6 @@ go run main.go
 
 3.6
 go run main.go
-http://localhost:8000/
 
 3.7
 go run main.go
@@ -100,4 +99,4 @@ go run mainBigRat.go
 
 3.9
 go run main.go
-http://localhost:8000/
+http://localhost:8000/?xmin=-2;ymin=-2;zoom=1
