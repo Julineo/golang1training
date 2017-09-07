@@ -22,7 +22,7 @@ import (
 func main() {
 	const (
 		xmin, ymin, xmax, ymax = -2, -2, +2, +2
-		zoom = 1
+		zoom = 2
 		width, height = 1024 * zoom, 1024 * zoom
 		widthP, heightP = width * 2, height * 2
 	)
@@ -33,17 +33,21 @@ func main() {
         superSamples[i] = make([]color.Color, widthP)
     }
 
-	ty := big.NewFloat(float64((ymax - ymin) + ymin))
-	tx := big.NewFloat(float64((xmax - xmin) + xmin))
+	ty := big.NewFloat(float64(ymax - ymin))
+	tymin := big.NewFloat(float64(ymin))
+	tx := big.NewFloat(float64(xmax - xmin))
+	txmin := big.NewFloat(float64(xmin))
 	
 	for py := 0; py < heightP; py++ {
 		pyb, heightPb := big.NewFloat(float64(py)), big.NewFloat(float64(heightP))
 		y := new(big.Float).Quo(pyb, heightPb)
 		y.Mul(y,ty)
+		y.Add(y,tymin)
 		for px := 0; px < widthP; px++ {
 			pxb, widthPb := big.NewFloat(float64(px)), big.NewFloat(float64(widthP))
 		    x := new(big.Float).Quo(pxb, widthPb)
 			x.Mul(x,tx)
+			x.Add(x,txmin)
 		    xF64,_ := x.Float64()
 			yF64,_ := y.Float64()
 			z := complex(xF64, yF64)

@@ -21,7 +21,7 @@ import (
 func main() {
 	const (
 		xmin, ymin, xmax, ymax = -2, -2, +2, +2
-		zoom int = 1
+		zoom int = 2
 		width, height = 1024 * zoom, 1024 * zoom
 		widthP, heightP = width * 2, height * 2
 	)
@@ -31,11 +31,14 @@ func main() {
     for i := range superSamples {
         superSamples[i] = make([]color.Color, widthP)
     }
+	
+	//ty := float64((ymax - ymin) + ymin)
+	//tx := float64((xmax - xmin) + xmin)
 
 	for py := 0; py < heightP; py++ {
-		y := float64(py) / float64(heightP) * (ymax - ymin) + ymin
+		y := float64(py) / float64(heightP) * float64((ymax - ymin)) + float64(ymin)
 		for px := 0; px < widthP; px++ {
-		    x := float64(px) / float64(widthP) * (xmax - xmin) + xmin
+		    x := float64(px) / float64(widthP) * float64((xmax - xmin)) + float64(xmin)
 		    z := complex(x, y)
 
 		    superSamples[px][py] = mandelbrot(z)
