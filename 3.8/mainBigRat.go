@@ -17,9 +17,12 @@ import (
 	"log"
 	"os"
 	"math/big"
+	"time"
+	"fmt"
 )
 
 func main() {
+	start := time.Now()
 	const (
 		xmin, ymin, xmax, ymax = -2, -2, +2, +2
 		zoom = 1
@@ -88,7 +91,7 @@ func main() {
 	if err := f.Close(); err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
 }
 
 func mandelbrot(z complex128) color.Color {

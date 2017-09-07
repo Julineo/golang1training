@@ -84,3 +84,20 @@ go run main.go
 3.6
 go run main.go
 http://localhost:8000/
+
+3.7
+go run main.go
+
+3.8
+go run main.go
+//21.08s elapsed
+go run mainC64.go
+//5.85s elapsed
+go run mainBigFloat.go
+//56.61s elapsed
+go run mainBigRat.go
+//28.51s elapsed
+
+3.9
+go run main.go
+http://localhost:8000/
