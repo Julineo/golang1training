@@ -100,3 +100,6 @@ go run mainBigRat.go
 3.9
 go run main.go
 http://localhost:8000/?xmin=-2;ymin=-2;zoom=1
+
+3.10
+$ go run main.go 123456 1234567890
