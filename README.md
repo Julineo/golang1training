@@ -103,3 +103,6 @@ http://localhost:8000/?xmin=-2;ymin=-2;zoom=1
 
 3.10
 $ go run main.go 123456 1234567890
+
+3.11
+$ go run main.go -123.456 -123.4567890
