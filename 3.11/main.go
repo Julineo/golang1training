@@ -17,29 +17,42 @@ func main() {
 // comma inserts commas in a non-negative decimal integer string.
 func comma(s string) string {
 	var buf1 bytes.Buffer
-	//var buf2 bytes.Buffer
+	var buf2 bytes.Buffer
 	var s1, s2 string
 	if dot := strings.LastIndex(s, "."); dot >= 0 {
 		s1 = s[:dot]
 		s2 = s[dot+1:]
-		//fmt.Println(s1)
-		fmt.Println(s2)
 	}
-	var n int
-	for i := len(s1); i > 0; i-- {
-		notSign := false
-		if _, err := strconv.Atoi(v); err == nil {
-			notSign = true
+	var n int = -1
+	var previous string
+	for i := len(s1)+1; i > 0; i-- {
+		v := s[i-1:i]
+		if _, err := strconv.Atoi(previous); err == nil {
+			n++
 		}
-		if n >= 3 && notSign { 
+		if n >= 3 { 
 			buf1.WriteString(",")
 			n = 0
 		}
-		v := s[i-1:i]
-		n++
-		fmt.Fprintf(&buf1, "%v", string(v))
-	} 
-	return reverse(buf1.String() )
+		fmt.Fprintf(&buf1, "%v", string(previous))
+		previous = v
+		if i == 1 {
+			fmt.Fprintf(&buf1, "%v", string(previous))
+		}
+	}
+	n = -1
+	for i := 0; i < len(s2); i++ {
+		v := s2[i:i+1]
+		if _, err := strconv.Atoi(v); err == nil {
+			n++
+		}
+		if n >= 3 { 
+			buf2.WriteString(",")
+			n = 0
+		}
+		fmt.Fprintf(&buf2, "%v", string(v))
+	}
+	return reverse(buf1.String()) + buf2.String()
 }
 
 func reverse(s string) string {
