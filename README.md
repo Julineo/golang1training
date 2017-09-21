@@ -1,4 +1,6 @@
-Simple test go projects
+This repository contains the solutions of the exercises in the book Go Programming Language.
+
+Similar to #gopl-solutions
 
 notes:
 
