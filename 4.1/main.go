@@ -3,7 +3,8 @@ package main
 import "fmt"
 
 import ("crypto/sha256"
-	"golang1training/4.1/popcount")
+	//"golang1training/4.1/popcount"//this is just for practice
+	)
 
 func main() {
 	c1 := sha256.Sum256([]byte("x"))
@@ -15,5 +16,17 @@ func main() {
 	// false
 	// [32]uint8
 	
-	fmt.Printf("%v", popcount.PopCount(255))
+    n := 0
+	for i := range c1 {
+		for j := uint(0); j < 64; j++ {
+			//fmt.Printf("%8b\n", c1[i])
+			//fmt.Printf("%8b\n", c2[i])
+			//fmt.Printf("%8b\n", 1<<j)
+			if c1[i]&(1<<j) != c2[i]&(1<<j) {
+				n++
+			}
+		}
+	}
+	fmt.Println(n)
+	//fmt.Printf("%v", popcount.PopCount(255))
 }
