@@ -117,3 +117,9 @@ $ go run main.go
 
 4.1
 $ go run main.go
+
+4.2
+$go build
+$./4.2 < main.go SHA512
+or
+$./4.2 input text manually
