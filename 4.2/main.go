@@ -13,10 +13,8 @@ func main() {
 	
 	if len(flags) == 0 {
 		flag = ""
-		fmt.Println("flag = ")
 	} else {
-		flag = string(flags[1])
-		fmt.Println(flag)
+		flag = flags[0]
 	}
 	
 	input := bufio.NewScanner(os.Stdin)
