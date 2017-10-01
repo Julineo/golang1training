@@ -123,3 +123,6 @@ $go build
 $./4.2 < main.go SHA512
 or
 $./4.2 input text manually
+
+4.3
+$go run main.go
