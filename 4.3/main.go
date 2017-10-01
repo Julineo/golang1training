@@ -17,7 +17,7 @@ func main() {
 	}
 
 	fmt.Println(ptr)
-	reverse(ptr)
+	reverse(&ptr)
 	for  i := 0; i < MAX; i++ {
 		fmt.Printf("Value of a[%d] = %d\n", i,*ptr[i] )
 	} // "[5 4 3 2 1 0]"
@@ -27,7 +27,7 @@ func main() {
 
 
 
-func reverse(s [MAX]*int) {
+func reverse(s *[MAX]*int) {
 	fmt.Println(s)
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
