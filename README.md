@@ -126,3 +126,7 @@ $./4.2 input text manually
 
 4.3
 $go run main.go
+
+4.4
+$go run main.go
+
