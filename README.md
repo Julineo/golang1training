@@ -138,3 +138,9 @@ $go run main.go
 
 4.7
 $go run main.go
+
+4.8
+$go run main.go
+
+4.9
+$go run main.go < main.go
