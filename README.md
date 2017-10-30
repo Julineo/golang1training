@@ -144,3 +144,6 @@ $go run main.go
 
 4.9
 $go run main.go < main.go
+
+4.10
+$go run main.go repo:golang/go is:open json decoder
