@@ -1,9 +1,3 @@
-// Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
-// License: https://creativecommons.org/licenses/by-nc-sa/4.0/
-
-// See page 112.
-//!+
-
 // Issues prints a table of GitHub issues matching the search terms.
 package main
 
@@ -44,7 +38,7 @@ func main() {
 		if time.Now().Sub(item.CreatedAt) > yL {
 			category = "More than a year old"
 		}
-		fmt.Printf("#%-5d %9.9s %.55s\n %s\n Time:%v",
+		fmt.Printf("#%-5d %9.9s %.55s\n %s\n Time:%v\n",
 			item.Number, item.User.Login, item.Title, category, item.CreatedAt)
 		
 	}
