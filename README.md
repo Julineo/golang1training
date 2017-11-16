@@ -147,3 +147,10 @@ $go run main.go < main.go
 
 4.10
 $go run main.go repo:golang/go is:open json decoder
+
+4.11
+$go run main.go create
+$go run main.go read
+$go run main.go update
+$go run main.go delete
+$go run main.go search repo:golang/go is:open json decoder
