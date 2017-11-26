@@ -21,6 +21,7 @@ func main() {
 	dilbert.Salary -= 5000
 
 	fmt.Println(dilbert.Salary)
+	fmt.Printf("%T\n", dilbert)
 
 	var employeeOfTheMonth *Employee = &dilbert
 	employeeOfTheMonth.Position += " (proactive team player)"

@@ -6,7 +6,8 @@ import (
 	"log"
 	"os"
 
-	"golang1training/4.11/github"
+	//"golang1training/4.11/github"
+	"gopl.ex/4.11/github"
 )
 
 func main() {
@@ -15,6 +16,7 @@ func main() {
 	//create functionality
 	if mode == "create" {
 		fmt.Println("Create")
+		github.CreateIssue(os.Args[1:])
 	}
 	
 	//search functionality
