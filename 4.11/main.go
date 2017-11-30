@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	//"golang1training/4.11/github"
-	"gopl.ex/4.11/github"
+	"golang1training/4.11/github"
+	//"gopl.ex/4.11/github"
 )
 
 func main() {
