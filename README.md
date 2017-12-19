@@ -158,4 +158,6 @@ $go run main.go search repo:golang/go is:open json decoder
 4.11 borrowed
 $go run main.go
 go run *.go read Julineo golang1training 1
-
+//not working
+go run *.go create Julineo golang1training 2
+go run *.go delete Julieno golang1training 2

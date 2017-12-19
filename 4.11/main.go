@@ -10,7 +10,22 @@ import (
 	//"gopl.ex/4.11/github"
 )
 
+var usage string = `
+search QUERY
+[create|read|update|delete] OWNER REPO ISSUENUMBER
+`
+
+func usageExit() {
+	fmt.Fprintln(os.Stderr, usage)
+	os.Exit(1)
+}
+
 func main() {
+	//Exit with error if no parameters
+	if len(os.Args[:]) < 3 {
+		usageExit()
+	}
+	
 	fmt.Println(os.Args[1:])
 	mode := os.Args[1]
 	owner := os.Args[2]
@@ -31,12 +46,11 @@ func main() {
 		owner, repo, number, issue.User.Login, issue.Title, body)
 	}
 	
-	
 	//create functionality
 	//deal with it later
 	if mode == "create" {
 		fmt.Println("Create")
-		github.CreateIssue(os.Args[1:])
+		github.CreateIssue(owner, repo, number)
 	}
 	
 	//search functionality
