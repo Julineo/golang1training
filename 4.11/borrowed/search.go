@@ -62,6 +62,7 @@ func get(url string) (*http.Response, error) {
 
 func GetIssue(owner string, repo string, number string) (*Issue, error) {
 	url := strings.Join([]string{APIURL, "repos", owner, repo, "issues", number}, "/")
+	fmt.Println(url)
 	resp, err := get(url)
 	if err != nil {
 		return nil, err

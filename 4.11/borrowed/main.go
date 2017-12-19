@@ -1,4 +1,4 @@
-package ma
+package main
 import (
 	"encoding/json"
 	"fmt"

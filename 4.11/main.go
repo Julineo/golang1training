@@ -13,7 +13,27 @@ import (
 func main() {
 	fmt.Println(os.Args[1:])
 	mode := os.Args[1]
+	owner := os.Args[2]
+	repo := os.Args[3]
+	number := os.Args[4]
+	
+	//read functionality
+	if mode == "read" {
+		issue, err := github.GetIssue(owner, repo, number)
+		if err != nil {
+			log.Fatal(err)
+		}
+		body := issue.Body
+		if body == "" {
+			body = "<empty>\n"
+		}
+	fmt.Printf("repo: %s/%s\nnumber: %s\nuser: %s\ntitle: %s\n\n%s",
+		owner, repo, number, issue.User.Login, issue.Title, body)
+	}
+	
+	
 	//create functionality
+	//deal with it later
 	if mode == "create" {
 		fmt.Println("Create")
 		github.CreateIssue(os.Args[1:])
