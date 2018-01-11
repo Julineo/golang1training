@@ -162,7 +162,7 @@ go run *.go read Julineo golang1training 1
 go run *.go create Julineo golang1training 2
 go run *.go delete Julieno golang1training 2
 
-
+4.12
 
 
 
