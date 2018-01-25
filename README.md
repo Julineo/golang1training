@@ -163,7 +163,7 @@ go run *.go create Julineo golang1training 2
 go run *.go delete Julieno golang1training 2
 
 4.12
-
+$go run main.go
 
 
 
