@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"encoding/json"
 	"strconv"
+	"log"
+	"os"
+	"bufio"
 )
 
 //We'll use this const for figuring out the max number of comics.
@@ -16,9 +19,9 @@ type ResponseResultLast struct {
 }
 
 type ResponseResult struct {
-	Month string
 	Num int
-	Year string
+	Transcript string
+	Alt string
 }
 
 func main() {
@@ -39,7 +42,7 @@ func main() {
 	resp.Body.Close()
 	
 	var ResponseResults[]ResponseResult
-	//Loop through all comics
+	//Loop through all comics. Read the data we need.
 	for i := 1; i <= resultLast.Num; i++ {
 		RequestURL := "https://xkcd.com/" + strconv.FormatInt(int64(i), 10) + "/info.0.json"
 		
@@ -57,6 +60,29 @@ func main() {
 		
 		fmt.Println(RequestURL)
 	}
-	fmt.Println(ResponseResults)
+	
+	//Write data to json format
+	data, err := json.MarshalIndent(ResponseResults, "", " ")
+	if err != nil {
+		log.Fatalf("JSON marshaling failed: %s", err)
+	}
+	fmt.Printf("%s\n", data)
+	
+	//writing to a file
+	f, err := os.OpenFile("data", os.O_APPEND|os.O_WRONLY, 0600)//try to open file
+	if err != nil {
+		f, err = os.Create("data")//create new file if can't open
+	}
+	if err != nil {
+		fmt.Errorf("Error : %s", err)
+	}
+	defer f.Close()
+	w := bufio.NewWriter(f)
+
+	_, err = fmt.Fprint(w, data)
+	if err != nil {
+		fmt.Errorf("Error : %s", err)
+	}
+	w.Flush()
 
 }
