@@ -164,6 +164,7 @@ go run *.go delete Julieno golang1training 2
 
 4.12
 $go run main.go
+//idx will be created
 
 
 
