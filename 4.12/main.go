@@ -96,6 +96,12 @@ func main() {
 			idx[word] = append(idx[word], result.Num)
 		}
 	}
+	for _, result := range ResponseResults {
+		for _, word := range strings.Split(result.Transcript," ") {
+			idx[word] = append(idx[word], result.Num)
+		}
+	}
+	
 	
 	//Save to a file
 	saveIdx("idx", idx)
