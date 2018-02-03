@@ -38,21 +38,6 @@ f, err := os.Create(file)
         }
 }
 
-func loadIdx(file string) (idx map[string][]int) {
-        f, err := os.Open(file)
-        if err != nil {
-                panic("cant open file")
-        }
-        defer f.Close()
-
-        enc := gob.NewDecoder(f)
-        if err := enc.Decode(&idx); err != nil {
-                panic("can't decode")
-        }
-
-        return idx
-}
-
 func main() {
 
 	resp, err := http.Get(RequestLastURL)
