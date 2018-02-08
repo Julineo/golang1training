@@ -168,6 +168,14 @@ $go run main.go
 
 $go run xkcd.go
 
+4.13
+Became a patreon at https://omdbapi.com/
+Generay API keys at https://omdbapi.com/apikey.aspx
+
+$go run poster.go [your key here] Batman
+
+
+
 
 
 
