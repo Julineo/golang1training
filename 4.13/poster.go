@@ -1,17 +1,15 @@
 package main
 
 import (
-	//"net/url"
 	"net/http"
 	"fmt"
 	"encoding/json"
 	"os"
-	//"bufio"
 	"strings"
 )
 
 var usage string = `usage:
-xkcd [search term]
+poster [search term]
 `
 func usageDie() {
 	fmt.Fprintln(os.Stderr, usage)
@@ -20,6 +18,7 @@ func usageDie() {
 
 type ResponseResultURL struct {
 	Poster string
+	Number int
 }
 
 func main() {
@@ -34,6 +33,7 @@ func main() {
 	fmt.Println("http://omdbapi.com/?t="+name+"&apikey="+apikey)
 	
 	resp, err := http.Get("http://www.omdbapi.com/?t="+name+"&"+apikey)
+	//resp, err := http.Get("http://api.open-notify.org/astros.json")
 	if err != nil {
 		fmt.Errorf("Error : %s", err)
 	}
@@ -47,5 +47,6 @@ func main() {
 	}
 	resp.Body.Close()
 	
+	fmt.Println(result.Number)
 	fmt.Println(result.Poster)
 }
