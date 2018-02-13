@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"io"
+	"log"
 )
 
 var usage string = `usage:
@@ -34,31 +35,31 @@ func main() {
 	resp, err := http.Get("http://omdbapi.com/?t="+name+"&apikey="+apikey)
 	//resp, err := http.Get("http://api.open-notify.org/astros.json")
 	if err != nil {
-		fmt.Errorf("Error : %s", err)
+		log.Fatal(err)
 	}
 	
-	fmt.Printf("resp %v \n",resp)
+	//fmt.Printf("resp %v \n",resp)
 
 	var result ResponseResultURL
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		resp.Body.Close()
-		fmt.Errorf("Error : %s", err)
+		log.Fatal(err)
 	}
 	resp.Body.Close()
 	
 	resp, err = http.Get(result.Poster)
 	if err != nil {
-		fmt.Errorf("Error : %s", err)
+		log.Fatal(err)
 	}
 	//open file for writing
 	image, err := os.Create("Posters/" + name + ".jpg")
 	if err != nil {
-		fmt.Errorf("Error : %s", err)
+		log.Fatal(err)
 	}
 	//io.Copy is good for a huge files
 	_, err = io.Copy(image, resp.Body)
 	if err != nil {
-		fmt.Errorf("Error : %s", err)
+		log.Fatal(err)
 	}
 	
 	resp.Body.Close()
