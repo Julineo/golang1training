@@ -57,12 +57,12 @@ func main() {
 		log.Fatal(err)
 	}
 	//io.Copy is good for a huge files
-	_, err = io.Copy(image, resp.Body)
+	size, err := io.Copy(image, resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 	
 	resp.Body.Close()
 	image.Close()
-	fmt.Println("Posters/" + name + ".jpg")
+	fmt.Printf("%s with %v bytes downloaded\n", name, size)
 }

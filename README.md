@@ -2,7 +2,7 @@ This repository contains the solutions of the exercises in the book Go Programmi
 
 Similar to #gopl-solutions
 
-Eecution:
+How to run
 
 1.3
 $ go run main.go
@@ -174,8 +174,9 @@ Generay API keys at https://omdbapi.com/apikey.aspx
 
 $go run poster.go [your key here] Batman
 
-
-
+4.14
+$go run main.go repo:golang/go is:open json decoder
+http://localhost:8000/?xmin=-2;ymin=-2;zoom=1
 
 
 
