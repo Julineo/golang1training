@@ -5,7 +5,8 @@ import (
 	"log"
 	"os"
 	"html/template"
-	"golang1training/github"
+	//"golang1training/github"
+	"gopl.ex/github"
 	"net/http"
 )
 
@@ -17,6 +18,7 @@ var issueList = template.Must(template.New("issuelist").Parse(`
   <th>State</th>
   <th>User</th>
   <th>Title</th>
+  <th>Milestone</th>
 </tr>
 {{range .Items}}
 <tr>
@@ -24,12 +26,14 @@ var issueList = template.Must(template.New("issuelist").Parse(`
   <td>{{.State}}</td>
   <td><a href='{{.User.HTMLURL}}'>{{.User.Login}}</a></td>
   <td><a href='{{.HTMLURL}}'>{{.Title}}</a></td>
+  <td><a href='{{.Milestone.HTMLURL}}'>{{.Milestone.Title}}</a></td>
 </tr>
 {{end}}
 </table>
 `))
 
 func main() {
+
 	result, err := github.SearchIssues(os.Args[1:])
 	if err != nil {
 		log.Fatal(err)

@@ -175,9 +175,10 @@ Generay API keys at https://omdbapi.com/apikey.aspx
 $go run poster.go [your key here] Batman
 
 4.14
+//run webserver
 $go run main.go repo:golang/go is:open json decoder
-http://localhost:8000/?xmin=-2;ymin=-2;zoom=1
-
+open browser and navigate to users, issues, milestones
+http://localhost:8000
 
 
 The Go Programming Language Exercises:
