@@ -1,11 +1,12 @@
 package main
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"html/template"
+	"strings"
 )
 
 var data []byte
@@ -14,84 +15,72 @@ var movieList = template.Must(template.New("movielist").Parse(`
 <table>
 <tr style='text-align: left'>
   <th>Title</th>
-  <th>released</th>
-  <th>color</th>
+  <th>Actor</th>
 </tr>
 {{range .Movies}}
 <tr>
   <td>{{.Title}}</td>
-  <td>{{.released}}</td>
-  <td>{{.color}}</td>
+  <td>{{.Actor.Name}}</td>
 </tr>
 {{end}}
 </table>
 `))
 
+type DataS struct {
+	Movies      []*Movie
+}
+
+type Movie struct {
+	Title	string
+	Actor      *Actor
+}
+
+type Actor struct {
+	Name   string
+}
+
 func main() {
 	data := `{"Movies":
 	[
+			{
+				"Title": "Cool Hand Luke",
+				"Actor": {
+							"Name": "Paul Newman"
+						}
+			},
     		{
-        	"Title": "Cool Hand Luke",
-        	"released": 1967,
-        	"color": true,
-        	"Actors": [
-            	"Paul Newman"
-        			]
+				"Title": "Bullitt",
+				"Actor": {
+							"Name":"Steve McQueen"
+						}
     		},
     		{
-        	"Title": "Bullitt",
-        	"released": 1968,
-        	"color": true,
-        	"Actors": [
-            	"Steve McQueen",
-            	"Jacqueline Bisset"
-        			]
-    		},
-    		{
-        	"Title": "Casablanca",
-        	"released": 1942,
-        	"Actors": [
-            	"Humphrey Bogart",
-            	"Ingrid Bergman"
-        			]
+				"Title": "Casablanca"
     		}
 	]
 }`
-	fmt.Printf("%s\n", data)
 
-	if err := movieList.Execute(os.Stdout, data); err != nil {
+/*
+,
+				"Actor": {
+							"Name":"Humphrey Bogart"
+						}
+*/
+
+	fmt.Printf("%s\n", data)
+	
+	r := strings.NewReader(data)
+	
+	var result DataS
+	if err := json.NewDecoder(r).Decode(&result); err != nil {
+		fmt.Println(1)
+		log.Fatal(err)
+	}
+	
+	fmt.Printf("%v\n", result)
+
+	if err := movieList.Execute(os.Stdout, result); err != nil {
+		fmt.Println(2)
 		log.Fatal(err)
 	}
 }
-
-/*
-{"movies":
-	[
-    		{
-        	"Title": "Casablanca",
-        	"released": 1942,
-        	"Actors": [
-            	"Humphrey Bogart",
-            	"Ingrid Bergman"
-        			]
-    		},
-    		{
-        	"Title": "Cool Hand Luke",
-        	"released": 1967,
-        	"color": true,
-        	"Actors": [
-            	"Paul Newman"
-        			]
-    		},
-    		{
-        	"Title": "Bullitt",
-        	"released": 1968,
-        	"color": true,
-        	"Actors": [
-            	"Steve McQueen",
-            	"Jacqueline Bisset"
-        			]
-    		}
-	]
-}
-*/
