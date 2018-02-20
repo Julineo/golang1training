@@ -15,10 +15,10 @@ type IssuesSearchResult struct {
 type Issue struct {
 	Number    int
 	HTMLURL   string `json:"html_url"`
-	Title     string
+	Title     string `json:"Tit"`
 	State     string
 	User      *User
-	Milestone *Milestone
+	Milestone *Milestone `json:",omitempty"`
 	CreatedAt time.Time `json:"created_at"`
 	Body      string    // in Markdown format
 }

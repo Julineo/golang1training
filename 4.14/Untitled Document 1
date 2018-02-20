@@ -1,0 +1,739 @@
+&{Number:18037 HTMLURL:https://github.com/golang/go/issues/18037 Title:encoding/json: simplify dominantField State:open User:0xc8204065a0 Milestone:0xc820406900 CreatedAt:2016-11-23 22:28:25 +0000 UTC Body:
+
+### What version of Go are you using (`go version`)?
+
+1.7.3
+
+### What operating system and processor architecture are you using (`go env`)?
+
+any
+
+### Enhancement
+
+Since byName sorts by index depth and tag presence, the dominant field is always the first. So the dominantField function can be simplified to checking for the error case: more than one field at top level, both tagged or both untagged.
+
+```go
+func dominantField(fs []field) (field, bool) {
+    if len(fs) > 1 && len(fs[0].index) == len(fs[1].index) && fs[0].tag == fs[1].tag {
+        return field{}, false
+    }
+    return fs[0], true
+}
+```
+See  https://code-review.googlesource.com/9552.
+}
+&{Number:23898 HTMLURL:https://github.com/golang/go/issues/23898 Title:proposal: http: FileServer: add json content type for directory serving State:open User:0xc820406ce0 Milestone:0xc820406fe0 CreatedAt:2018-02-17 21:41:00 +0000 UTC Body:Proposal for the http.FileServer:
+
+In case that the `Accept` request header contains `application/json`, and the path leads to a directory, return the content of a directory as JSON.
+
+Reason: add a bot an easier way to parse directory content.
+
+Similar to: NGINX has [autoindex_format](https://nginx.org/en/docs/http/ngx_http_autoindex_module.html) option that has a `json` argument which makes NGINX return directory listings in a json format. The returned format is a list of maps, each map contains `name`, `type` (`directory`/`file`), `mtime` (modify time) and files also contain `size` in bytes, for example:
+```
+[
+{ "name":"c", "type":"directory", "mtime":"Sun, 21 Jan 2018 08:13:49 GMT" },
+{ "name":"xxx", "type":"file", "mtime":"Sun, 21 Jan 2018 08:13:49 GMT", "size":17 }
+]
+```
+Doesn't mean that this is a good representation, we can debate if we want to adopt it.}
+&{Number:22480 HTMLURL:https://github.com/golang/go/issues/22480 Title:proposal: encoding/json: add omitnil option State:open User:0xc820407420 Milestone:0xc8204076e0 CreatedAt:2017-10-28 20:20:06 +0000 UTC Body:Note: This proposal already has as a [patch] from 2015 by @bakineggs, but it appears to have fallen between the cracks.
+
+I have the following case:
+
+```go
+type Join struct {
+    ChannelId string      `json:"channel_id"`
+    Accounts  []Ident     `json:"accounts,omitempty"`
+    History   []TextEntry `json:"history,omitempty"`
+}
+```
+
+This struct is used for message passing and the slices are only relevant (and set to non-`nil`) in some cases. However, since `encoding/json` does not differentiate between a `nil` slice and an empty slice, there will be legitimate cases where a field is excluded when it's not expected to (e.g., the `History` slice is set, but empty).
+
+I reiterate the proposal by Dan in his patch referred above to support an `omitnil` option which allows this differentiation for slices and maps.
+
+*Note for hypothetical Go 2.0:* This is already how `omitempty` works for pointers to Go's basic types (e.g., `(*int)(nil)` is omitted while pointer to `0` is not). For Go 2.0 the behavior of `omitempty` could change to omit both `nil` and `0` when specified, and then only `nil` would be omitted when `omitnil` is specified.
+
+[patch]: https://go-review.googlesource.com/c/go/+/10686}
+&{Number:11858 HTMLURL:https://github.com/golang/go/issues/11858 Title:encoding/json: UnmarshalTypeError.Offset and json subparsers State:open User:0xc820407ae0 Milestone:0xc820407de0 CreatedAt:2015-07-24 09:26:26 +0000 UTC Body:This is a followup to #9693 that added UnmarshalTypeError.Offset to record textual position of errors during unmarshaling. The problem with the landed patch is that it does not deal with UnmarshalTypeError returned from implementations of Unmarshaler.UnmarshalJSON(). The offset in such case would reflect an offset from the beginning  of the slice, not from the start of the original JSON.
+
+It would be nice to be able to recover the full offset for such cases. For example, UnmarshalTypeError could include a boolean flag indicating that UnmarshalTypeError.Offset should be updated by the caller to reflect the real position in the file. Then the code that handles errors from UnmarshalJSON would do just that.
+}
+&{Number:23037 HTMLURL:https://github.com/golang/go/issues/23037 Title:cmd/go: add build -json, to report build failures in JSON State:open User:0xc8203fc1a0 Milestone:0xc8203fc4e0 CreatedAt:2017-12-07 18:25:50 +0000 UTC Body:If I run `go test` on a directory and one of the packages is failed to run, I won't get any json output for it.
+It would be great to have at least a single package-fail json-message.
+}
+&{Number:21903 HTMLURL:https://github.com/golang/go/issues/21903 Title:encoding/json: Unexpected marshal behavior State:open User:0xc8203fc8e0 Milestone:<nil> CreatedAt:2017-09-15 20:41:24 +0000 UTC Body:I created a custom MarshalJSON for my struct and it outputs the wrong struct if I have customs MarshalJSON nested in my struct.
+
+I'm trying to understand why it doesn't work as expected. I know that there are some limitations with type redefinition but it works well if I don't nest any struct with a custom MarshalJSON.
+
+### What version of Go are you using (`go version`)?
+
+1.8
+
+### Does this issue reproduce with the latest release?
+
+Yes
+
+### What operating system and processor architecture are you using (`go env`)?
+
+Linux
+
+### What did you do?
+
+[https://play.golang.org/p/Mp1ot20ILA](https://play.golang.org/p/Mp1ot20ILA)
+
+This example is just to be able to reproduce the problem. I know it doesn't make any sense the custom Copy type, but in a real problem, I would extend Copy type by adding custom fields.
+
+### What did you expect to see?
+
+{"value":"A"}
+{"value":"B","A":{"value":"A"}}
+{"value":"C","A":{"value":"A"},"B":{"value":"B","A":{"value":"A"}}}
+
+or at least
+
+{"value":"A"}
+{"value":"B"}
+{"value":"C"}
+
+### What did you see instead?
+
+{"value":"A"}
+{"value":"A"}
+{"value":"C","A":{"value":"A"},"B":{"value":"A"}}
+
+The first line is ok.
+The second line is completely wrong.
+The third line is almost ok.
+
+C has two nested objects with a custom marshal and it works almost good.
+B has just one and it prints the output of A.}
+&{Number:23331 HTMLURL:https://github.com/golang/go/issues/23331 Title:proposal: encoding/json: export the offset method of the Decoder State:open User:0xc8203fcd80 Milestone:0xc8203fd080 CreatedAt:2018-01-04 02:59:36 +0000 UTC Body:I was wondering if there is support for exporting the offset method of the encoding/json Decoder? The offset would be useful in cases where an error is reported during decoding. The json.SyntaxError and json.UnmarshalTypeError types export an Offset field but for other error types it's currently not possible to reconstruct the offset. This is most notable when I'm providing an implementation for the Unmarshaler interface. When decoder.Decode() returns an error generated by an UnmarshalJSON implementation, it's not possible to reconstruct the offset. If the offset method was public then I could use that information to show where the error occurred. There is a slight wrinkle in that the Decoder offset is set to the end of a token when an error occurs. But I don't think it's an issue. If I store the length of the token in the error that is returned from the UnmarshalJSON method that I am implementing then I can subtract and find the start of the token. That design doesn't require any changes to the Decoder. Is there any interest in exporting this method?}
+&{Number:22533 HTMLURL:https://github.com/golang/go/issues/22533 Title:proposal: encoding/json: preserve unknown fields State:open User:0xc8203fd440 Milestone:0xc8203fd740 CreatedAt:2017-11-01 20:44:26 +0000 UTC Body:Yesterday I've implemented https://github.com/golang/go/issues/15314, which allows to optionally fail JSON decoding if an object has a key which cannot be mapped to a field in the destination struct.
+
+In the discussion of that proposal, a few people floated the idea of having a mechanism to collect such keys/values instead of silently ignoring them or failing to parse.
+
+The main use case I can think of is allowing for JSON to be decoded into structs, modified, and serialized back while preserving unknown keys (modulo the order in which they appeared, and potentially "duplicate" keys that are dropped due to uppercase/lowercase collisions, etc.). This behavior is supported by many languages / libraries and other serialization systems such as protocol buffers.
+
+I propose to add this type to the JSON package:
+
+```go
+type UnknownFields map[string]interface{}
+```
+
+Users of the JSON package can then embed this type in structs for which they'd like to use the feature:
+
+```go
+type Data struct {
+  json.UnknownFields
+  FirstField int
+  SecondField string
+}
+```
+
+On decoding, any object key/value which cannot be mapped to a field in the destination struct would be decoded and stored in UnknownFields. On encoding, any key present UnknownFields would be added to the serialized object.
+
+I can think of a couple edge cases which are tricky, and I propose to resolve them as follows:
+
+##### Nested structs
+
+It's possible for nested structs to also declare UnknownFields. In such cases any UnknownFields in nested structs should be ignored, both when decoding and encoding. Pros: it is consistent with how we already flatten fields, and it's the only way to ensure decoding is unambiguous. Cons: keys that somehow were set to UnknownFields in a child struct would be ignored on encoding.
+
+##### Key collisions
+
+When encoding it's possible that a key in UnknownFields would collide with another field on the struct. In such cases the key in UnknownFields should be ignored. Pros: it is consistent with the behavior in absence of UnknownFields, seems generally less error prone, it cannot happen in a plain decode/edit/encode cycle, it's unambiguous. Cons: it can possibly lead to silently dropping some values.
+
+PS: I'm happy to do the implementation should the proposal or some variation of it be approved.}
+&{Number:17914 HTMLURL:https://github.com/golang/go/issues/17914 Title:encoding/json: stateEndTop allocates an error it doesn't return State:open User:0xc8203fdb00 Milestone:0xc8203fddc0 CreatedAt:2016-11-14 14:56:18 +0000 UTC Body:### What version of Go are you using (`go version`)?
+
+go version go1.7 darwin/amd64
+
+### What operating system and processor architecture are you using (`go env`)?
+
+GOARCH="amd64"
+GOBIN=""
+GOEXE=""
+GOHOSTARCH="amd64"
+GOHOSTOS="darwin"
+GOOS="darwin"
+GOPATH="/Users/almcpherson/gopath"
+GORACE=""
+GOROOT="/Users/almcpherson/go1.7"
+GOTOOLDIR="/Users/almcpherson/go1.7/pkg/tool/darwin_amd64"
+CC="clang"
+GOGCCFLAGS="-fPIC -m64 -pthread -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fdebug-prefix-map=/var/folders/jv/2c5lqc993lgdnm85hggybmw43959v8/T/go-build941373586=/tmp/go-build -gno-record-gcc-switches -fno-common"
+CXX="clang++"
+CGO_ENABLED="1"
+
+### What did you do?
+
+Running benchmarks to see why 
+func stateEndTop(s *scanner, c byte) int  
+
+is making calls to 
+
+func (s *scanner) error(c byte, context string) int 
+
+on valid json.
+
+```go
+package mapping
+
+import (
+	"encoding/json"
+	"testing"
+)
+
+func BenchmarkLittleJSON(b *testing.B) {
+	little := []byte(`{ "hello": "world", "x": {"n": 1, "m":2}, "world": ["1","2","3"], "what": "heh?"}`)
+	for i := 0; i < b.N; i++ {
+		var result struct {
+			Hello string `json:"hello"`
+			World []string `json:"world"`
+		}
+		if err := json.Unmarshal(little, &result); err != nil {
+			b.Error(err)
+		}
+	}
+}
+```
+
+https://play.golang.org/p/Fsvp3vGwXO
+
+go test -bench "BenchmarkLittleJSON" -cpuprofile c.out
+go tool pprof -peek error  test.test c.out 
+
+### What did you expect to see?
+no calls to error
+
+### What did you see instead?
+calls to error
+
+1.18s of 1.18s total (  100%)
+----------------------------------------------------------+-------------
+      flat  flat%   sum%        cum   cum%   calls calls% + context              
+----------------------------------------------------------+-------------
+                                             0.21s   100% |   encoding/json.stateEndTop
+         0     0%     0%      0.21s 17.80%                | encoding/json.(*scanner).error
+                                             0.11s 52.38% |   runtime.concatstring4
+                                             0.07s 33.33% |   encoding/json.quoteChar
+                                             0.03s 14.29% |   runtime.newobject
+----------------------------------------------------------+-------------
+
+}
+&{Number:23746 HTMLURL:https://github.com/golang/go/issues/23746 Title:x/tools/godoc/dl: provide a JSON feed of Go releases State:open User:0xc8203f21c0 Milestone:0xc8203f2500 CreatedAt:2018-02-08 16:28:41 +0000 UTC Body:Currently there seems to be no programmatic way I can consume a list of releases / checksums when a new release is published (especially relevant for CVEs).
+
+It would be great if there was a JSON feed (or some other mechanism) that would allow users to determine what the latest release download links / checksums were.
+
+Unsure what sort of URL this would be presented of off but I could imagine something like `GET https://golang.org/dl/releases.json`}
+&{Number:5683 HTMLURL:https://github.com/golang/go/issues/5683 Title:encoding/json: performance slower than expected State:open User:0xc8203f28a0 Milestone:0xc8203f2ba0 CreatedAt:2013-06-11 18:24:19 +0000 UTC Body:by **reid.write**:
+
+<pre>STR:
+1. clone the git repository here: git@github.com:tarasglek/jsonbench.git
+2. Generate some sample JSON data using the instructions in the README
+3. Run the go json benchmark which is in gojson/src/jsonbench/json.go
+
+What is the expected output?
+I expected to see performance roughly in line with Java (using Jackson for json
+parsing). On my test machine, the Java benchmark results in the following:
+Processing 436525928 bytes took 5491 ms (75.82 MB/s)
+
+What do you see instead?
+Significantly slower performance, using the same input file:
+Duration: 27.497043818s, 15.14 MB/s
+
+Which compiler are you using (5g, 6g, 8g, gccgo)?
+Not sure
+
+Which operating system are you using?
+Linux dell-ubuntu 3.2.0-45-generic #70-Ubuntu SMP Wed May 29 20:12:06 UTC 2013 x86_64
+x86_64 x86_64 GNU/Linux
+
+Which version are you using?  (run 'go version')
+go version go1.1 linux/amd64</pre>
+}
+&{Number:17609 HTMLURL:https://github.com/golang/go/issues/17609 Title:encoding/json: ambiguous fields are marshalled State:open User:0xc8203f2fa0 Milestone:0xc8203f32c0 CreatedAt:2016-10-26 16:07:27 +0000 UTC Body:Embedded fields work, even when there are selectors that are the same:
+ex: https://play.golang.org/p/fJTGL-HWEk
+You get a compile time error though when you select ambiguously:
+ex: https://play.golang.org/p/McjVYbnAhT
+I understand that it would be hard to achieve, but I expect a compile time error from the following code, but I don't get one:
+https://play.golang.org/p/2oOXH2uzWy
+
+I understand that others might rely on this inconsistency now, but if a compile time error is achievable (I understand that this would be difficult), it will be the least offensive fix possible. 
+}
+&{Number:7872 HTMLURL:https://github.com/golang/go/issues/7872 Title:encoding/json: Encoder internally buffers full output State:open User:0xc8203f3660 Milestone:0xc8203f3980 CreatedAt:2014-04-26 17:47:25 +0000 UTC Body:<pre>What does 'go version' print?
+
+go version devel +2f6b9f80be36 Fri Apr 25 09:46:07 2014 -0600 linux/amd64
+
+What steps reproduce the problem?
+If possible, include a link to a program on play.golang.org.
+
+1. Use json.NewEncoder(writer).Encode(value)
+
+What happened?
+
+Each call to json.Encoder.Encode uses an internal bytes.Buffer to buffer all encoded
+output prior to writing any of that output.
+
+What should have happened instead?
+
+Output should use little or no internal buffering. Encoder should be able to efficiently
+encode (and incrementally output) very large inputs.</pre>
+}
+&{Number:22518 HTMLURL:https://github.com/golang/go/issues/22518 Title:encoding/json: JSON tags don't handle empty properties, non-standard characters State:open User:0xc8203f3da0 Milestone:0xc8203ec060 CreatedAt:2017-10-31 22:20:57 +0000 UTC Body:#### What did you do?
+
+https://play.golang.org/p/RRB1VFNufW
+
+Trying to unmarshal with tags like this:
+
+```
+type Data struct {
+	Foo    string `json:"Foo"`
+	Empty  string `json:""`
+	Quote  string "json:\"\\\""
+	Smiley string "json:\"\U0001F610\""
+}
+```
+
+#### What did you expect to see?
+
+```
+{"Foo": "bla", "": "nothing", "\"": "quux", "😐": ":-|"}
+{"Foo":"bla","":"nothing","\"":"quux","😐":":-|"}
+```
+
+#### What did you see instead?
+
+```
+{"Foo": "bla", "": "nothing", "\"": "quux", "😐": ":-|"}
+{"Foo":"bla","Empty":"","Quote":"","Smiley":""}
+```
+
+#### System details
+
+```
+go version go1.9.2 darwin/amd64
+GOARCH="amd64"
+GOBIN=""
+GOEXE=""
+GOHOSTARCH="amd64"
+GOHOSTOS="darwin"
+GOOS="darwin"
+GOPATH="/Users/schani/go"
+GORACE=""
+GOROOT="/usr/local/go"
+GOTOOLDIR="/usr/local/go/pkg/tool/darwin_amd64"
+GCCGO="gccgo"
+CC="clang"
+GOGCCFLAGS="-fPIC -m64 -pthread -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fdebug-prefix-map=/var/folders/1h/7ghts1ys53xdk8y1czrjzdmw0000gn/T/go-build770874315=/tmp/go-build -gno-record-gcc-switches -fno-common"
+CXX="clang++"
+CGO_ENABLED="1"
+CGO_CFLAGS="-g -O2"
+CGO_CPPFLAGS=""
+CGO_CXXFLAGS="-g -O2"
+CGO_FFLAGS="-g -O2"
+CGO_LDFLAGS="-g -O2"
+PKG_CONFIG="pkg-config"
+GOROOT/bin/go version: go version go1.9.2 darwin/amd64
+GOROOT/bin/go tool compile -V: compile version go1.9.2
+uname -v: Darwin Kernel Version 16.7.0: Thu Jun 15 17:36:27 PDT 2017; root:xnu-3789.70.16~2/RELEASE_X86_64
+ProductName:	Mac OS X
+ProductVersion:	10.12.6
+BuildVersion:	16G29
+lldb --version: lldb-900.0.50.1
+  Swift-4.0
+gdb --version: GNU gdb (GDB) 7.12.1
+```
+}
+&{Number:23033 HTMLURL:https://github.com/golang/go/issues/23033 Title:testing: testing with -json option is not debuggable State:open User:0xc8203ec440 Milestone:<nil> CreatedAt:2017-12-07 18:07:53 +0000 UTC Body:Continuation of #22789 and relates to #22996
+
+Suggested solution doesn't allow debug tests and use JSON output simultaneously.}
+&{Number:14140 HTMLURL:https://github.com/golang/go/issues/14140 Title:encoding/gob, encoding/json: add streaming interface State:open User:0xc8203ec920 Milestone:0xc8203ecbe0 CreatedAt:2016-01-28 22:40:17 +0000 UTC Body:When encoding a large data structure (such as a tree representing a file-system), the Encode() methods first marshal the encoded data into a []byte buffer and then write the buffer to the writer.  Similarly, the Decode() methods require a buffer to unmarshal from. These buffers must be allocated (and grown) and typically more than double the memory consumption of the process. This is limiting for applications which are sized to the machine/container.
+
+I propose that the interfaces are extended to support streaming encoding/decoding of data. For each type (except slices and maps), the data would be separately marshaled and written. For slices and maps, each entry would be marshaled and written, rather the slice/map as a whole.
+
+Some API suggestions/alternatives:
+func Encode(w io.Writer, v interface{}) error
+func NewStreamingEncoder(w io.Writer) *Encoder
+func (enc *Encoder) StreamingEncode(v interface{}) error
+}
+&{Number:11046 HTMLURL:https://github.com/golang/go/issues/11046 Title:encoding/json: Decoder internally buffers full input State:open User:0xc8203ecfc0 Milestone:0xc8203ed2c0 CreatedAt:2015-06-03 19:25:08 +0000 UTC Body:When using the JSON package, if I encode a struct like
+
+``` go
+type Data struct {
+    Count int
+    Names []string
+}
+```
+
+and then decode it into
+
+``` go
+type SmallData struct {
+    Count int
+}
+```
+
+it will still allocate memory for the list of names, even though it just gets thrown away.  This becomes an annoyance when I have several multigigabyte JSON files like this.  It would be neat if the JSON parser could identify what fields it cares about, or somehow be told what fields to ignore, and chuck them.
+}
+&{Number:21990 HTMLURL:https://github.com/golang/go/issues/21990 Title:encoding/json: support struct tag for time.Format in JSON Marshaller/Unmarshaller State:open User:0xc8203ed700 Milestone:0xc8203ed980 CreatedAt:2017-09-23 18:06:03 +0000 UTC Body:I will start with the proposal as a TL;DR before explaining the motivations behind it: 
+
+**Proposal**
+
+It would be quite convenient if we could have the `encoding/json` package understand the format of `time.Time` as part of the struct definition. Something like this:
+
+```go
+type User struct {
+	Name     string
+	JoinDate time.Time `time:"2006-01-02"`
+}
+``` 
+
+This means that when you write `json.Unmarshal(data, &user)`, the json package will understand what format to parse/serialize the field with. 
+
+**Motivation/Experience Report**
+
+Currently, there are three workarounds: 
+
+1. `type MyTime time.Time`: [https://goplay.space/#APZL4Rzlm_](https://goplay.space/#APZL4Rzlm_)
+
+2. Embedding time.Time in MyTime type: https://goplay.space/#q-oKnSTtQV
+
+3. Implementing `json.Unmarshaller` on the parent struct: https://goplay.space/#mzb8MQfajl
+
+Those workarounds are not bad. However, I've noticed that they get out of hand once your codebase starts to scale.
+
+Imagine having hundreds of structs with hundreds of fields where many of them could have different Time types just because they have different serialization formats, and nothing else. 
+
+The `time.Time` package, I think, might be too opinionated to assume RFC3339 is the only acceptable format in the `json.Unmarshaller` interface: https://github.com/golang/go/blob/master/src/time/time.go#L1232. (Same goes for RFC3339Nano in the json.Marshaller implementation).
+
+I think it makes sense for it to be a default serialization format, but not the only one. The workaround is initially not bad at all. However, it gets cumbersome when your project scales. 
+
+I think this proposal shows that the above solution can make our code more declarative and less cumbersome. This echo's Rob Pike's [talk](https://www.youtube.com/watch?v=rFejpH_tAHM) in that here we can hide complexity behind a simple interface. 
+
+Lastly, this doesn't make or break my Go experience, but I personally see room for enhancement here. }
+&{Number:14702 HTMLURL:https://github.com/golang/go/issues/14702 Title:encoding/json: Unmarshal into struct field or a map does not validate invalid json.Number State:open User:0xc8203edd80 Milestone:0xc8203e0040 CreatedAt:2016-03-08 03:30:29 +0000 UTC Body:1. What version of Go are you using (`go version`)?
+   go1.6 linux/amd64
+2. What operating system and processor architecture are you using (`go env`)?
+   linux/amd64
+3. What did you do?
+   (Use play.golang.org to provide a runnable example, if possible.)
+   http://play.golang.org/p/8QZq-0vRch
+4. What did you expect to see?
+   Unmarshal did not accept a invalid JSON as a json.Number, instead, it should raise an error
+5. What did you see instead?
+   Unmarshal accepted a invalid JSON as a json.Number and did not raise an error
+#10281 is the one that actually fixed this issue, however, shouldn't unmarshal should also raise an error? Right now only Marshalling is an raising a error.
+
+@edit
+I actually did some further testing and it only happens when Unmarshalling into a struct field, as can be seen in the updated snippet above.
+
+@edit2
+It also happens when using map[string]json.Number and I have updated the test case accordingly.
+}
+&{Number:22967 HTMLURL:https://github.com/golang/go/issues/22967 Title:encoding/json: bad encoding of field with MarshalJSON method  State:open User:0xc8203e04c0 Milestone:0xc8203e0780 CreatedAt:2017-12-01 21:27:06 +0000 UTC Body:Please answer these questions before submitting your issue. Thanks!
+
+### What version of Go are you using (`go version`)?
+
+version 1.9
+
+### Does this issue reproduce with the latest release?
+
+yes
+
+### What operating system and processor architecture are you using (`go env`)?
+
+windows/amd64
+
+### What did you do?
+
+```golang
+package main
+
+import (
+	"encoding/json"
+	"os"
+)
+
+type T bool
+
+func (v *T) MarshalJSON() ([]byte, error) {
+	return []byte{'1'}, nil
+}
+
+type S struct {
+	X T
+}
+
+func main() {
+	v := S{true}
+	e := json.NewEncoder(os.Stderr)
+
+	e.Encode(v)  // should print {"X":true}
+	e.Encode(&v) // should print the same value
+}
+```
+
+### What did you expect to see?
+
+```json
+{"X":true}
+{"X":true}
+```
+
+### What did you see instead?
+
+```json
+{"X":true}
+{"X":1}
+```
+
+### Issue
+
+The `json.Marshal` documentation states that:
+
+> Pointer values encode as the value pointed to. A nil pointer encodes as the null JSON value.
+
+Thus, `&v` should be marshaled to the same JSON value as `v`:
+
+```json
+{"X":true}
+```
+
+Moreover, it states that:
+
+> If an encountered value implements the Marshaler interface and is not a nil pointer, Marshal calls its MarshalJSON method to produce JSON.
+
+Therefore, Marshal should not call the `MarshalJSON` method to produce JSON for the `X` field, because its `T` type does not implement the `json.Marshaler` interface. In fact, `MarshalJSON` has `*T` receiver and the Go documentation states:
+
+> The method set of an interface type is its interface. The method set of any other type `T` consists of all methods declared with receiver type `T`. ... The method set of a type determines the interfaces that the type implements ...
+
+As a final remark:
+
+1. from the source code, the most relevant difference between cases `v` and `&v` is that `X` field becomes addressable in case `&v`, changing the encoding generated by `condAddrEncoder`;
+
+1. implementing `MarshalJSON` with `T` value receiver makes `T` a `json.Marshaler` interface, with `X` values properly encoded by MarshalJSON:
+
+    ```json
+    {"X":1}
+    {"X":1}
+    ```
+
+1. if the intended behavior is that Marshal should anyway call the `MarshalJSON` method on encoding `T` values, whenever `*T` implements the `json.Marshaler` interface, that should be clearly documented.
+}
+&{Number:5901 HTMLURL:https://github.com/golang/go/issues/5901 Title:encoding/json: allow override type marshaling State:open User:0xc8203e0b60 Milestone:0xc8203e0e80 CreatedAt:2013-07-17 16:39:15 +0000 UTC Body:<pre>For example, if a user wants to marshal net.IP with custom code, we should provide a way
+to do that, probably a method on *Encoder. Similarly for *Decoder.
+
+Same for encoding/xml.</pre>
+}
+&{Number:19858 HTMLURL:https://github.com/golang/go/issues/19858 Title:proposal: encoding/json: add mechanism to mark fields as required State:open User:0xc8203e1220 Milestone:0xc8203e1540 CreatedAt:2017-04-05 22:00:41 +0000 UTC Body:Please answer these questions before submitting your issue. Thanks!
+
+### What version of Go are you using (`go version`)?
+go1.7.5
+
+While unmarshaling json into a struct, no error is thrown if the struct doesn't contain a particular field. For example if three fields are needed in the struct and the json input provides only two, no error is thrown and the third field is just empty.
+this is my example:
+
+```
+type Example struct {
+	Name string `json:"name"`
+	Place string `json:"place"`
+	Date string `json:"date"`
+}
+
+func main() {
+	jsonStr := []byte(`{"name":"someName","place":"somePlace"}`)
+	var ex *Example
+	err := json.Unmarshal(jsonStr, &ex)
+	if err != nil {
+		fmt.Printf("ERROR : %v\n", err)
+	}
+	fmt.Printf("%#v",ex)
+}
+```
+
+Output:
+`&main.Example{Name:"someName", Place:"somePlace", Date:""}`
+
+Expected:
+Some error indicating required field not provided
+
+I know I can check if the field is empty after unmarshaling, but is there a way to throw error during it?}
+&{Number:6213 HTMLURL:https://github.com/golang/go/issues/6213 Title:proposal: encoding/json: add "inline" struct tag State:open User:0xc8203e1920 Milestone:0xc8203e1c20 CreatedAt:2013-08-22 02:57:29 +0000 UTC Body:by **bjruth**:
+
+<pre>Discussion was conceived on golang-nuts:
+<a href="https://groups.google.com/forum/#">https://groups.google.com/forum/#</a>!topic/golang-nuts/bAgNll-EMkI to add support for a
+flag that supports unmarshaling arbitary JSON into structs. A tag was announced for the
+mgo/bson package here:
+<a href="https://groups.google.com/forum/?fromgroups=#">https://groups.google.com/forum/?fromgroups=#</a>!topic/golang-nuts/ZeP7PaXVDQo that
+transparently stores data into a separate struct field denoted by &quot;inline&quot;
+during an unmarshal and then merges that data back into the output during marshaling.
+
+I believe this would be a very useful feature to add into the encoding/json package and
+does not introduce any breaking changes in the Go 1.x series.</pre>
+}
+&{Number:14750 HTMLURL:https://github.com/golang/go/issues/14750 Title:encoding/json: parser ignores the case of member names State:open User:0xc8203e1fe0 Milestone:0xc8203d2300 CreatedAt:2016-03-10 13:04:44 +0000 UTC Body:1. What version of Go are you using? `5.3`
+2. What operating system and processor architecture are you using? `amd64,windows`
+3. What did you do?
+   Read this: https://mailarchive.ietf.org/arch/msg/json/Ju-bwuRv-bq9IuOGzwqlV3aU9XE
+4. What did you expect to see?
+   ...
+5. What did you see instead?
+   ...
+}
+&{Number:12001 HTMLURL:https://github.com/golang/go/issues/12001 Title:encoding/json: Marshaler/Unmarshaler not stream friendly State:open User:0xc8203d26a0 Milestone:0xc8203d2980 CreatedAt:2015-08-03 19:14:17 +0000 UTC Body:The Marshaler/Unmarshaler interface deals with whole []byte slices:
+
+``` go
+type Marshaler interface {
+        MarshalJSON() ([]byte, error)
+}
+type Unmarshaler interface {
+        UnmarshalJSON([]byte) error
+}
+```
+
+If you're dealing with a type that encodes to an array that has a large number of objects inside you have to encode all of into a single []byte.
+
+The encoding/xml package is, unlike encoding/json, stream friendly:
+
+``` go
+type Marshaler interface {
+        MarshalXML(e *Encoder, start StartElement) error
+}
+type Unmarshaler interface {
+        UnmarshalXML(d *Decoder, start StartElement) error
+}
+```
+
+With MarshalXML you can call e.Encode/e.EncodeElement/e.EncodeToken.
+
+Since encoding/json is gaining Token()/EncodeToken() methods it would be really helpful to have a Marshaler/Unmarshaler interface that can take advantage of that. Perhaps something along the lines of:
+
+``` go
+type Encoder interface {
+        EncodeJSON(e *Encoder) error
+}
+type Decoder interface {
+        DecodeJSON(d *Decoder) error
+}
+```
+
+Since Marshaler/Unmarshaler can't be changed. Or something like:
+
+``` go
+type Marshaler2 interface {
+        MarshalJSON(e *Encoder) error
+}
+type Unmarshaler2 interface {
+        UnmarshalJSON(d *Decoder) error
+}
+```
+}
+&{Number:22816 HTMLURL:https://github.com/golang/go/issues/22816 Title:encoding/json: include field name in unmarshal error messages when extracting time.Time State:open User:0xc8203d2da0 Milestone:0xc8203d30c0 CreatedAt:2017-11-20 13:12:06 +0000 UTC Body:allocated from #6716 .
+
+### What version of Go are you using (`go version`)?
+go1.9.2 linux/amd64
+
+### Does this issue reproduce with the latest release?
+yes
+
+### What operating system and processor architecture are you using (`go env`)?
+GOARCH="amd64"
+GOHOSTARCH="amd64"
+GOHOSTOS="linux"
+GOOS="linux"
+
+### What did you do?
+run https://play.golang.org/p/YnlDi-3DMP
+
+If possible, provide a recipe for reproducing the error.
+A complete runnable program is good.
+A link on play.golang.org is best.
+
+
+### What did you expect to see?
+Field name with error message
+
+### What did you see instead?
+Error without field name
+}
+&{Number:16212 HTMLURL:https://github.com/golang/go/issues/16212 Title:encoding/json: do all reflect work before decoding State:open User:0xc8203d3460 Milestone:0xc8203d3760 CreatedAt:2016-06-29 16:07:36 +0000 UTC Body:@crawshaw commented in [CL 24472](https://go-review.googlesource.com/#/c/24472/):
+
+> With more time and care, I believe more of the JSON decoder's work could be shifted so it is done before decoding, and independent of the number of bytes processed. Maybe someone could explore that for Go 1.8.
+
+This issue is a reminder, because CLs get forgotten.
+}
+&{Number:22752 HTMLURL:https://github.com/golang/go/issues/22752 Title:proposal: encoding/json: add access to the underlying data causing UnmarshalTypeError State:open User:0xc8203d3b60 Milestone:0xc8203d3e20 CreatedAt:2017-11-15 23:46:13 +0000 UTC Body:Currently one has to maintain a copy of the data being decoded by `json`.`Decoder` to retrieve the underlying data yielding an `UnmarshalTypeError` when decoding a `json` stream.
+
+Making the data in `decodeState`.`data` directly accessible in the returned error:
+
+```go
+type UnmarshalTypeError struct {
+    …
+    Data    []byte
+}
+```
+
+would make it easy to enable improved diagnostics for faulty inputs. 
+
+(Somewhat related to #8254 and #9693 which are also about error diagnostics in `encoding/json`.)}
+&{Number:11939 HTMLURL:https://github.com/golang/go/issues/11939 Title:proposal: encoding/json, encoding/xml: support zero values of structs with omitempty State:open User:0xc8203ca260 Milestone:0xc8203ca580 CreatedAt:2015-07-30 14:14:34 +0000 UTC Body:Support zero values of structs with omitempty in encoding/json and encoding/xml.
+
+This bites people a lot, especially with `time.Time`.  Open bugs include #4357 (which has many dups) and #10648.  There may be others.
+## Proposal
+
+**Check for zero struct values by adding an additional case to the `isEmptyValue` function:**
+
+``` go
+case reflect.Struct:
+        return reflect.Zero(v.Type()).Interface() == v.Interface()
+```
+
+This will solve the vast majority of cases.
+
+(Optional) **Introduce a new `encoding.IsZeroer` interface, and use this to check for emptiness:**
+
+**Update**: _I am dropping this part of the proposal, [see below](https://github.com/golang/go/issues/11939#issuecomment-149303511)._
+
+``` go
+type IsZeroer interface {
+        IsZero() bool
+}
+```
+
+Visit [this playground link](http://play.golang.org/p/lUNzjSV_bN) and note that the unmarshaled `time.Time` value does not have a `nil` `Location` field.  This prevents the reflection-based emptiness check from working.  `IsZero()` already exists on `time.Time`, has the correct semantics, and has been adopted as a convention by Go code outside the standard library.
+
+An additional check can be added to the `isEmptyValue()` functions before checking the value's `Kind`:
+
+``` go
+if z, ok := v.Interface().(encoding.IsZeroer); ok {
+        return z.IsZero()
+}
+```
+## Compatibility
+
+The `encoding.IsZeroer` interface could introduce issues with existing non-struct types that may have implemented `IsZero()` without consideration of `omitempty`.  If this is undesirable, the `encoding.IsZeroer` interface check could be moved only within the struct case:
+
+``` go
+case reflect.Struct:
+        val := v.Interface()
+        if z, ok := val.(encoding.IsZeroer); ok {
+                return z.IsZero()
+        }
+        return reflect.Zero(v.Type()).Interface() == val
+```
+
+Otherwise, this change is backward-compatible with existing valid uses of `omitempty`.  Users who have applied `omitempty` to struct fields incorrectly will get their originally intended behavior for free.
+## Implementation
+
+I (@joeshaw) have implemented and tested this change locally, and will send the CL when the Go 1.6 tree opens.
+}
+&{Number:6859 HTMLURL:https://github.com/golang/go/issues/6859 Title:encoding/xml, encoding/json: package docs don't mention encoding.TextMarshaler and encoding.TextUnmarshaler State:open User:0xc8203ca900 Milestone:0xc8203cabe0 CreatedAt:2013-12-01 23:14:42 +0000 UTC Body:<pre>version: Go 1.2
+
+What is the expected output?
+`encoding/xml` and `encoding/json` should document the behavior that it will check
+encoding.TextMarshaler and encoding.TextUnmarshaler.</pre>
+}
+alex@alex-LENOVO-IDEAPAD-G570:~/go/src/gopl.ex/4.14$ ^C
+alex@alex-LENOVO-IDEAPAD-G570:~/go/src/gopl.ex/4.14$ 
+
