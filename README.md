@@ -181,6 +181,12 @@ open browser and navigate to users, issues, milestones
 http://localhost:8000
 
 5.1
+$ go build golang1training/5.1/findlinksr
+$ ./fetch https://golang.org | ./findlinksr
+
+5.2
+$ go build golang1training/5.2/popmap
+$ ./fetch https://golang.org | ./popmap
 
 The Go Programming Language Exercises:
 
