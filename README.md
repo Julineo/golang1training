@@ -176,10 +176,9 @@ $go run poster.go [your key here] Batman
 
 4.14
 //run webserver
-$go run main.go repo:golang/go is:open json decoder
+$go run main.go repo:golang/go is:open json
 open browser and navigate to users, issues, milestones
 http://localhost:8000
-//not solved. Works if all milestones exist. If there is one nil milestone - nothing is works.
 
 The Go Programming Language Exercises:
 

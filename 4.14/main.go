@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"log"
 	"os"
 	"html/template"
@@ -26,7 +26,7 @@ var issueList = template.Must(template.New("issuelist").Parse(`
   <td>{{.State}}</td>
   <td><a href='{{.User.HTMLURL}}'>{{.User.Login}}</a></td>
   <td><a href='{{.HTMLURL}}'>{{.Title}}</a></td>
-  <td><a href='{{.Milestone.HTMLURL}}'>{{.Milestone.Title}}</a></td>
+  <td>{{if .Milestone}}<a href='{{.Milestone.HTMLURL}}'>{{.Milestone.Title}}</a>{{end}}</td>
 </tr>
 {{end}}
 </table>
@@ -39,9 +39,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	for _, item := range result.Items {
+	/*for _, item := range result.Items {
 		fmt.Printf("%+v\n", item)
-	}
+	}*/
 	
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		//m, err := url.ParseQuery(r.URL.RawQuery)

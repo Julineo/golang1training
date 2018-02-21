@@ -20,7 +20,7 @@ var movieList = template.Must(template.New("movielist").Parse(`
 {{range .Movies}}
 <tr>
   <td>{{.Title}}</td>
-  <td>{{.Actor.Name}}</td>
+  <td>{{if .Actor}}{{.Actor.Name}}{{end}}</td>
 </tr>
 {{end}}
 </table>
@@ -44,15 +44,11 @@ func main() {
 	[
 			{
 				"Title": "Cool Hand Luke",
-				"Actor": {
-							"Name": "Paul Newman"
-						}
+				"Actor": {"Name": "Paul Newman"}
 			},
     		{
 				"Title": "Bullitt",
-				"Actor": {
-							"Name":"Steve McQueen"
-						}
+				"Actor": {"Name":"Steve McQueen"}
     		},
     		{
 				"Title": "Casablanca"
@@ -62,9 +58,7 @@ func main() {
 
 /*
 ,
-				"Actor": {
-							"Name":"Humphrey Bogart"
-						}
+				"Actor": {"Name":"Humphrey Bogart"}
 */
 
 	fmt.Printf("%s\n", data)
@@ -77,7 +71,7 @@ func main() {
 		log.Fatal(err)
 	}
 	
-	fmt.Printf("%v\n", result)
+	fmt.Printf("%s\n", result)
 
 	if err := movieList.Execute(os.Stdout, result); err != nil {
 		fmt.Println(2)
