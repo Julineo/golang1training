@@ -180,6 +180,8 @@ $go run main.go repo:golang/go is:open json
 open browser and navigate to users, issues, milestones
 http://localhost:8000
 
+5.1
+
 The Go Programming Language Exercises:
 
 chapter.exercise
