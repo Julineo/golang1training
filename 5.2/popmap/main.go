@@ -19,7 +19,7 @@ func main() {
 	fmt.Printf("%v", m)
 }
 
-// visit appends to links each link found in n and returns the result.
+// popmap populates map wich elements and their counts
 func popmap(elements map[string]int, stack []string, n *html.Node) {
 	if n.Type == html.ElementNode {
 		stack = append(stack, n.Data) // push tag
@@ -29,8 +29,6 @@ func popmap(elements map[string]int, stack []string, n *html.Node) {
 		popmap(elements, stack, c)
 	}
 }
-
-//!-visit
 
 /*
 //!+html
