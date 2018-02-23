@@ -188,6 +188,11 @@ $ ./fetch https://golang.org | ./findlinksr
 $ go build golang1training/5.2/popmap
 $ ./fetch https://golang.org | ./popmap
 
+5.3
+$ go build golang1training/5.3/htmltext
+$ ./fetch https://golang.org | ./htmltext
+
+
 The Go Programming Language Exercises:
 
 chapter.exercise

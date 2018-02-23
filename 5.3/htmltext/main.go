@@ -1,4 +1,4 @@
-// Write a function to populate a mapping from element names p, div, span, and so on to the number of elements with that name in an HTML document tree.
+//Write a function to print the contents of all text nodes in an HTML document tree. Do not descend into <script> or <style> elements, since their contents are not visible in a web browser.
 package main
 
 import (
@@ -11,16 +11,16 @@ import (
 func main() {
 	doc, err := html.Parse(os.Stdin)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "popmap: %v\n", err)
+		fmt.Fprintf(os.Stderr, "htmltext %v\n", err)
 		os.Exit(1)
 	}
 	m := make(map[string]int)
-	popmap(m, nil, doc)
-	fmt.Printf("%v\n", m)
+	htmltext(m, nil, doc)
+	fmt.Printf("%v", m)
 }
 
 // popmap populates map wich elements and their counts
-func popmap(elements map[string]int, stack []string, n *html.Node) {
+func htmltext(elements map[string]int, stack []string, n *html.Node) {
 	if n.Type == html.ElementNode {
 		stack = append(stack, n.Data) // push tag
 			elements[n.Data]++
