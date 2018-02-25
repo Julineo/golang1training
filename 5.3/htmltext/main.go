@@ -14,19 +14,24 @@ func main() {
 		fmt.Fprintf(os.Stderr, "htmltext %v\n", err)
 		os.Exit(1)
 	}
-	m := make(map[string]int)
-	htmltext(m, nil, doc)
-	fmt.Printf("%v", m)
+	htmltext(doc)
 }
 
-// popmap populates map wich elements and their counts
-func htmltext(elements map[string]int, stack []string, n *html.Node) {
-	if n.Type == html.ElementNode {
-		stack = append(stack, n.Data) // push tag
-			elements[n.Data]++
+// htmltext  prints text content from web page
+func htmltext(n *html.Node) {
+	if n.Type == html.TextNode {
+		fmt.Printf("n.Data: %v\n", n.Data)
+		//fmt.Printf("n: %v\n", n)
+		//fmt.Printf("n.Type: %v\n", n.Type)
+		//fmt.Printf("n.Data: %v\n", n.Data)
+		//fmt.Printf("n.Attr: %v\n", n.Attr)
+		//fmt.Printf("n.FirstChild: %v\n", n.FirstChild)
+		//fmt.Printf("n.NextSibling: %v\n", n.NextSibling)
 	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		popmap(elements, stack, c)
+	if !(n.Data == "script" || n.Data == "style")  {
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			htmltext(c)
+		}
 	}
 }
 
