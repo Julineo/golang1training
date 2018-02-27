@@ -192,6 +192,9 @@ $ ./fetch https://golang.org | ./popmap
 $ go build golang1training/5.3/htmltext
 $ ./fetch https://golang.org | ./htmltext
 
+5.4
+$ go run main.go https://golang.org
+
 
 The Go Programming Language Exercises:
 
