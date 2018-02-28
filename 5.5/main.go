@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-
+	"strings"
 	"golang.org/x/net/html"
 )
 
@@ -26,27 +26,25 @@ func CountWordsAndImages(url string) (words, images int, err error) {
 }
 
 func countWordsAndImages(n *html.Node) (words, images int) {
-	fmt.Println(n.Data)
-	if n.Type == html.TextNode {
-		fmt.Println(n.Data)
-		words++
-	}
-
-	if n.Type == html.ElementNode && (n.Data == "img") {
-		fmt.Println(n.Data)
+	if n.Type == html.ElementNode && n.Data == "img" {
+		//fmt.Println(n)
 		images++
 	}
-
-	fmt.Println("1")
-	if !(n.Data == "script" || n.Data == "style")  {
-	fmt.Println("2")
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-			fmt.Println("3")
-			w, i := countWordsAndImages(c)
-			return words + w, images + i
+	if n.Type == html.TextNode {
+		//fmt.Println(n.Data)
+		arrayWords := strings.Fields(n.Data)
+		for _, n := range arrayWords {
+			fmt.Printf("%d\n", n)
+			words++
 		}
 	}
-	fmt.Println("4")
+
+	if !(n.Data == "script" || n.Data == "style")  {
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			w, i := countWordsAndImages(c)
+			words, images = words + w, images + i
+		}
+	}
 	return words, images
 }
 

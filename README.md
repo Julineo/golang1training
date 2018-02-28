@@ -195,6 +195,8 @@ $ ./fetch https://golang.org | ./htmltext
 5.4
 $ go run main.go https://golang.org
 
+5.5
+$ go run main.go https://golang.org/doc/
 
 The Go Programming Language Exercises:
 
