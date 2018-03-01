@@ -42,7 +42,8 @@ func countWordsAndImages(n *html.Node) (words, images int) {
 	if !(n.Data == "script" || n.Data == "style")  {
 		for c := n.FirstChild; c != nil; c = c.NextSibling {
 			w, i := countWordsAndImages(c)
-			words, images = words + w, images + i
+			//words, images += w, i
+			words, images = words+w, images+i
 		}
 	}
 	return words, images

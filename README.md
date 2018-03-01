@@ -198,6 +198,13 @@ $ go run main.go https://golang.org
 5.5
 $ go run main.go https://golang.org/doc/
 
+5.6
+$ go run main.go
+//result file is in yourfile
+//insert result here:
+https://www.w3schools.com/graphics/tryit.asp?filename=trysvg_myfirst
+
+
 The Go Programming Language Exercises:
 
 chapter.exercise
