@@ -204,6 +204,8 @@ $ go run main.go
 //insert result here:
 https://www.w3schools.com/graphics/tryit.asp?filename=trysvg_myfirst
 
+5.7
+$ go run main.go https://golang.org
 
 The Go Programming Language Exercises:
 

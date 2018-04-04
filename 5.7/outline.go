@@ -49,13 +49,18 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 
 var depth int
 
+//modyfied version of startElement
 func startElement(n *html.Node) {
 	if n.Type == html.ElementNode {
 		fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
 		depth++
 	}
+	if n.Type == html.CommentNode {
+		fmt.Printf("%*s<!--%s-->\n", depth*2, "", n.Data)
+	}
 }
 
+//modyfied version of endElement
 func endElement(n *html.Node) {
 	if n.Type == html.ElementNode {
 		depth--
