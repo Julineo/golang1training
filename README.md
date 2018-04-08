@@ -205,7 +205,10 @@ $ go run main.go
 https://www.w3schools.com/graphics/tryit.asp?filename=trysvg_myfirst
 
 5.7
-$ go run main.go https://golang.org
+$ go run outline.go https://golang.org
+$ go test
+
+
 
 The Go Programming Language Exercises:
 
