@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"golang.org/x/net/html"
 )
@@ -35,10 +36,13 @@ func outline(url string) error {
 // forEachNode prints html outline in pretty form
 func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 
+/*	if n.Type == html.TextNode {
+		fmt.Println("Start:",n.Data,":End")
+	}*/
+
 	if pre != nil {
 		pre(n)
 	}
-	fmt.Println(n.FirstChild)
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		forEachNode(c, pre, post)
@@ -53,12 +57,29 @@ var depth int
 
 //modyfied version of startElement
 func startElement(n *html.Node) {
-	if n.Type == html.ElementNode && n.FirstChild == nil {
-		fmt.Printf("%*s<%s/>\n", depth*2, "", n.Data)
-	}
-	if n.Type == html.ElementNode && n.FirstChild != nil {
-		fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
-		depth++
+	if n.Type == html.ElementNode {
+		last := "/>"
+		if n.FirstChild != nil {
+			last = ">"
+		}
+		attrs := make([]string, 0, len(n.Attr))
+		for _, a := range n.Attr {
+			attrs = append(attrs, fmt.Sprintf(`%s="%s"`, a.Key, a.Val))
+		}
+		attrStr := ""
+		if len(n.Attr) != 0 {
+			attrStr = " " + strings.Join(attrs, " ")
+		}
+		fmt.Printf("%*s<%s%s%s\n", depth*2, "", n.Data, attrStr, last)
+		if n.FirstChild != nil {
+			depth++
+		}
+}
+	if n.Type == html.TextNode {
+		text := strings.TrimSpace(n.Data)
+		if len(text) != 0 {
+			fmt.Printf("%*s%s\n", depth*2, "", n.Data)
+		}
 	}
 	if n.Type == html.CommentNode {
 		fmt.Printf("%*s<!--%s-->\n", depth*2, "", n.Data)
