@@ -27,13 +27,13 @@ func getByID(url string) error {
 		return err
 	}
 
-	fmt.Printf("%v\n", ElementByID(doc, "playgroundButton"))
+	fmt.Printf("Result: %v\n", ElementByID(doc, "topbar"))
 
 	return nil
 }
 
 func ElementByID(doc *html.Node, id string) *html.Node {
-	return forEachNode(doc, startTrav, endTrav, id)
+	return forEachNode(doc, startTrav, nil, id)
 }
 
 func forEachNode(n *html.Node, pre, post func(n *html.Node, id string) bool, id string) *html.Node {
@@ -44,6 +44,7 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node, id string) bool, id 
 
 	if pre != nil {
 		if !pre(n, id)	{
+			fmt.Printf("%v\n", n)
 			return n
 		}
 	}
@@ -62,7 +63,8 @@ var depth int
 
 func startTrav(n *html.Node, id string) bool {
 	for _, a := range n.Attr {
-		if a.Key == "id" {
+		if a.Key == "id" && a.Val == id {
+			fmt.Printf("%v\n", n)
 			return false
 		}
 	}
