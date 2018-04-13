@@ -209,7 +209,8 @@ $ go run outline.go https://golang.org
 $ go test
 
 5.8
-$ go run getbyid.go https://golang.org
+$ go run getbyid.go topbar https://golang.com https://golang.org/project/
+
 
 The Go Programming Language Exercises:
 

@@ -10,12 +10,19 @@ import (
 )
 
 func main() {
-	for _, url := range os.Args[1:] {
-		getByID(url)
+	if len(os.Args) < 3 {
+		fmt.Fprintln(os.Stderr, "usage: getbyid id url url url...")
+	}
+
+
+	id := os.Args[1]
+
+	for _, url := range os.Args[2:] {
+		getNodeByID(url, id)
 	}
 }
 
-func getByID(url string) error {
+func getNodeByID(url, id string) error {
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
@@ -27,53 +34,44 @@ func getByID(url string) error {
 		return err
 	}
 
-	fmt.Printf("Result: %v\n", ElementByID(doc, "topbar"))
-
+	fmt.Printf("Result: %v\n", ElementByID(doc, id))
 	return nil
 }
 
 func ElementByID(doc *html.Node, id string) *html.Node {
-	return forEachNode(doc, startTrav, nil, id)
+
+	var relmnt *html.Node
+
+	startTrav := func(n *html.Node) bool {
+		for _, a := range n.Attr {
+			if a.Key == "id" && a.Val == id {
+				relmnt = n
+				return false
+			}
+		}
+		return true
+	}
+
+	forEachNode(doc, startTrav, nil)
+
+	return relmnt
 }
 
-func forEachNode(n *html.Node, pre, post func(n *html.Node, id string) bool, id string) *html.Node {
-
-/*	if n.Type == html.TextNode {
-		fmt.Println("Start:",n.Data,":End")
-	}*/
+func forEachNode(n *html.Node, pre, post func(n *html.Node) bool) {
 
 	if pre != nil {
-		if !pre(n, id)	{
-			fmt.Printf("%v\n", n)
-			return n
+		if !pre(n)	{
+			return
 		}
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		forEachNode(c, pre, post, id)
+		forEachNode(c, pre, post)
 	}
 
+	//we dont need this actually
 	if post != nil {
-		post(n, id)
+		fmt.Println("post !=nil")
 	}
-	return nil
-}
 
-var depth int
-
-func startTrav(n *html.Node, id string) bool {
-	for _, a := range n.Attr {
-		if a.Key == "id" && a.Val == id {
-			fmt.Printf("%v\n", n)
-			return false
-		}
-	}
-	return true
-}
-
-func endTrav(n *html.Node, id string) bool {
-	if n.Type == html.ElementNode && n.FirstChild != nil {
-		fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
-	}
-	return true
 }
