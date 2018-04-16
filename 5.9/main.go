@@ -1,17 +1,13 @@
 package main
 
 import (
-//	"sort"
-	"fmt"
+	"strings"
 )
 
-func main() {
-	fmt.Printf("%v", reverse("123"))
+func expand(s string, f func(string) string) string {
+	return strings.Replace(s, "$foo", f("foo"), -1)
 }
 
-func expand(s string, f func(string) string) string {
-	return "0"
-}
 
 func reverse(s string) string {
 	runes := []rune(s)

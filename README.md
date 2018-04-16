@@ -211,6 +211,9 @@ $ go test
 5.8
 $ go run getbyid.go topbar https://golang.com https://golang.org/project/
 
+5.9
+$ go test
+
 
 The Go Programming Language Exercises:
 
