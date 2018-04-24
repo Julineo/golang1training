@@ -1,0 +1,44 @@
+Original:
+1:	intro to programming
+2:	discrete math
+3:	data structures
+4:	algorithms
+5:	linear algebra
+6:	calculus
+7:	formal languages
+8:	computer organization
+9:	compilers
+10:	databases
+11:	operating systems
+12:	networks
+13:	programming languages
+
+No Sorting:
+1:	intro to programming
+2:	discrete math
+3:	data structures
+4:	computer organization
+5:	programming languages
+6:	algorithms
+7:	formal languages
+8:	operating systems
+9:	networks
+10:	databases
+11:	linear algebra
+12:	calculus
+13:	compilers
+
+topoSort2:
+1:	intro to programming
+2:	discrete math
+3:	data structures
+4:	algorithms
+5:	formal languages
+6:	computer organization
+7:	compilers
+8:	operating systems
+9:	networks
+10:	programming languages
+11:	linear algebra
+12:	calculus
+13:	databases

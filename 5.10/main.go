@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"sort"
+	//"sort"
 )
 
 // prereqs maps computer science courses to their prerequisites.
@@ -31,50 +31,31 @@ func main() {
 	}
 }
 
-
+//managed to change slices with map, although it wasn't good idea
 func topoSort(m map[string][]string) []string {
-	var order []string
+	var list []string
 	seen := make(map[string]bool)
-	var visitAll func(items []string)
+	var visitAll func(items map[string]string)
 
-	visitAll = func(items []string) {
+	visitAll = func(items map[string]string) {
 		for _, item := range items {
 			if !seen[item] {
 				seen[item] = true
-				visitAll(m[item])
-				order = append(order, item)
+				keys2 := make(map[string]string)
+				for _, key2 := range m[item] {
+					keys2[key2] = key2
+				}
+				visitAll(keys2)
+				list = append(list, item)
 			}
 		}
 	}
 
-	var keys []string
+	keys := make(map[string]string)
 	for key := range m {
-		keys = append(keys, key)
+		keys[key] = key
 	}
-	fmt.Println(keys)
 
-	sort.Strings(keys)
 	visitAll(keys)
-	return order
-}
-
-func topoSort2(m map[string][]string) []string {
-	var order []string
-	seen := make(map[string]bool)
-	var visitAll func([]string)
-
-	visitAll = func(items []string) {
-		for _, v := range items {
-			if !seen[v] {
-				seen[v] = true
-				visitAll(m[v])
-				order = append(order, v)
-			}
-		}
-	}
-
-	for k := range m {
-		visitAll([]string{k})
-	}
-	return order
+	return list
 }
