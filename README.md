@@ -214,6 +214,14 @@ $ go run getbyid.go topbar https://golang.com https://golang.org/project/
 5.9
 $ go test
 
+5.10
+
+5.11
+//not solved, will get back later
+
+5.12
+
+
 
 The Go Programming Language Exercises:
 
