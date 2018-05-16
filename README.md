@@ -221,7 +221,7 @@ $ go test
 
 5.12
 
-
+$ go run outline.go http://www.golang.com
 
 The Go Programming Language Exercises:
 

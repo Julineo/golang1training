@@ -1,5 +1,5 @@
 /*
-Exercise 5.12: The startElement and endElement functions in gopl.io/ch5/outline2 (§5.5) share a global variable, depth. Turn them into anonymous functions that share a variable local to the outline function.
+Exercise 5.12: The startElement and endElement functions in gopl.io/ch5/outline2 (5.5) share a global variable, depth. Turn them into anonymous functions that share a variable local to the outline function.
 */
 
 package main
@@ -30,6 +30,22 @@ func outline(url string) error {
 		return err
 	}
 
+	var depth int
+
+	startElement := func(n *html.Node) {
+		if n.Type == html.ElementNode {
+			fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
+			depth++
+		}
+	}
+
+	endElement := func(n *html.Node) {
+		if n.Type == html.ElementNode {
+			depth--
+			fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
+		}
+	}
+
 	forEachNode(doc, startElement, endElement)
 
 	return nil
@@ -48,20 +64,3 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 		post(n)
 	}
 }
-
-var depth int
-
-func startElement(n *html.Node) {
-	if n.Type == html.ElementNode {
-		fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
-		depth++
-	}
-}
-
-func endElement(n *html.Node) {
-	if n.Type == html.ElementNode {
-		depth--
-		fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
-	}
-}
-
