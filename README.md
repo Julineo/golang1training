@@ -223,7 +223,9 @@ $ go test
 $ go run outline.go http://www.golang.com
 
 5.13
-$ go run findlinks.go http://www.golang.com
+go run findlinks.go https://www.derekshoemaker.com http://www.alexfast.org http://www.bradfitz.com https://www.calhoun.io
+
+
 
 The Go Programming Language Exercises:
 

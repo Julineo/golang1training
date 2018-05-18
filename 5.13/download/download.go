@@ -9,8 +9,8 @@ import (
 	"path"
 )
 
+//download url to filename
 func download(url, filename string) {
-	fmt.Println("Downloading " + url + " ...")
 	resp, err := http.Get(url)
 	if err != nil {
 		panic(err)
@@ -27,7 +27,7 @@ func download(url, filename string) {
 }
 
 func main() {
-	pUrl := flag.String("url", "", "URL to be processed")
+	pUrl := flag.String("url", "http://www.alexfast.org", "URL to be processed")
 	flag.Parse()
 	url := *pUrl
 	if url == "" {
@@ -35,12 +35,13 @@ func main() {
 		return
 	}
 
-	filename := path.Base(url)
+	filename :=path.Base(url)
+	fmt.Println("test filename: ", filename)
 	fmt.Println("Checking if " + filename + " exists ...")
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		download(url, filename)
-		fmt.Println(filename + " saved!")
+		fmt.Println(filename, " saved!")
 	} else {
-		fmt.Println(filename + " already exists!")
+		fmt.Println(filename, " error ", err)
 	}
 }
