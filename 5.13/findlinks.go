@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"net/http"
+	"net/url"
 	"io"
 	"strings"
 
@@ -41,11 +42,31 @@ func breadthFirst(f func(item string) []string, worklist []string) {
 
 //modified crawl for saving data on local disk
 var local []string
-func crawl(url string) []string {
-	fmt.Println(url)
-	fmt.Println(path.Base(url))
-	//download(url, path.Base(url))
-	list, err := links.Extract(url)
+func crawl(urla string) []string {
+	//fmt.Println(urla)
+	//fmt.Println(path.Base(urla))
+	u, err := url.Parse(urla)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//check if local page
+	flag := false
+	for _, v := range local {
+		if strings.Replace(u.Host, "www.", "", 1) == v {
+			flag = true
+		}
+	}
+
+	if ! flag {
+		return []string{}
+	}
+	fmt.Println(urla, path.Base(urla))
+	fmt.Println(path.Base(urla))
+	//download(urla, path.Base(urla))
+
+
+	list, err := links.Extract(urla)
 	if err != nil {
 		log.Print(err)
 	}
@@ -74,7 +95,7 @@ func main() {
 	// starting from the command-line arguments.
 	// saving only local pages, ignoring eternal links
 	for _, v := range os.Args[1:] {
-		local = append(local, strings.Replace(path.Base(v), "www.", "", -1))
+		local = append(local, strings.Replace(path.Base(v), "www.", "", 1))
 	}
 	fmt.Println(local)
 	breadthFirst(crawl, os.Args[1:])
