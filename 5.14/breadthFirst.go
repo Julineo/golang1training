@@ -24,6 +24,28 @@ var prereqs = map[string][]string{
 	"programming languages": {"data structures", "computer organization"},
 }
 
+//this one has loops
+
+var prereqs2 = map[string][]string{
+	"algorithms": {"data structures"},
+	"linear algebra":	{"calculus"},
+	"calculus":   {"linear algebra"},
+
+	"compilers": {
+		"data structures",
+		"formal languages",
+		"computer organization",
+	},
+
+	"data structures":       {"discrete math"},
+	"databases":             {"data structures"},
+	"discrete math":         {"intro to programming","algorithms"},
+	"formal languages":      {"discrete math"},
+	"networks":              {"operating systems"},
+	"operating systems":     {"data structures", "computer organization"},
+	"programming languages": {"data structures", "computer organization"},
+}
+
 func breadthFirst(f func(item string) []string, worklist []string) {
 	seen := make(map[string]bool)
 	for len(worklist) > 0 {

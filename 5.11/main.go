@@ -59,22 +59,14 @@ func main() {
 func topoSort(m map[string][]string) []string {
 	var order []string
 	seen := make(map[string]bool)
-	index := make(map[string]int)
-	graph := make([][]int,2)
-	fmt.Println(graph)
+	//recStack := make(map[string]bool)
 	var visitAll func(items []string)
-	var idx int
-
 	visitAll = func(items []string) {
-		fmt.Println("items: ", items)
 		for _, item := range items {
 			if !seen[item] {
 				seen[item] = true
 				visitAll(m[item])
-				fmt.Println("add to order:", item)
 				order = append(order, item)
-				index[item] = idx
-				idx++
 			}
 		}
 	}
@@ -87,6 +79,7 @@ func topoSort(m map[string][]string) []string {
 	sort.Strings(keys)
 	fmt.Println("keys: ", keys)
 	visitAll(keys)
-	fmt.Println(index)
 	return order
 }
+
+
