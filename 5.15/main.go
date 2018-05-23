@@ -13,3 +13,17 @@ func max(vals ...int) int {
 	}
 	return max
 }
+
+
+func min(vals ...int) int {
+	if len(vals) == 0 {
+		panic("no parameters, at least one parameter required for max() function")
+	}
+	min := vals[0]
+	for _, v := range vals {
+		if v < min {
+			min = v
+		}
+	}
+	return min
+}

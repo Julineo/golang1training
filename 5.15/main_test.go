@@ -22,3 +22,20 @@ func TestMax(t *testing.T) {
 	}
 
 }
+
+func TestMin(t *testing.T) {
+	var tests = []struct {
+		vals []int
+		want int
+	}{
+		{[]int{1,2,3}, 1},
+		{[]int{-1}, -1},
+		{[]int{0}, 0},
+	}
+
+	for _, test := range tests {
+		if got := min(test.vals...); got != test.want {
+			t.Errorf("min(%d) = %d", test.vals, got)
+		}
+	}
+}
