@@ -228,6 +228,14 @@ go run findlinks.go https://www.derekshoemaker.com http://www.alexfast.org http:
 5.15
 $ go test
 
+5.16
+$ go test
+
+
+
+
+
+
 The Go Programming Language Exercises:
 
 chapter.exercise
