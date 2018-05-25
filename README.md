@@ -234,6 +234,8 @@ $ go test
 5.17
 $ go run main.go
 
+5.18
+$ go run main.go https://www.golang.com https://www.golang.com/doc
 
 
 
