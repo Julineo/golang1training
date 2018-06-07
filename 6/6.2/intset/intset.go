@@ -1,10 +1,5 @@
 /*
-ex6.1 Implement these additional methods: 
-Click here to view code image
-func (*IntSet) Len() int // return the number of elements
-func (*IntSet) Remove(x int) // remove x from the set
-func (*IntSet) Clear() // remove all elements from the set
-func (*IntSet) Copy() *IntSet // return a copy of the set
+ex 6.2: Define a variadic (*IntSet).AddAll(...int) method that allows a list of values to be added, such as s.AddAll(1, 2, 3)
 */
 
 // Package intset provides a set of integers based on a bit vector.
@@ -102,4 +97,12 @@ func (s *IntSet) Copy() *IntSet {
 	ret.words = make([]uint64, len(s.words))
 	copy(ret.words, s.words)
 	return &ret
+}
+
+// Adds multipple elements to the set
+func (s *IntSet) AddAll(xs ...int) {
+	fmt.Println(xs)
+	for _, x := range xs {
+		s.Add(x)
+	}
 }
