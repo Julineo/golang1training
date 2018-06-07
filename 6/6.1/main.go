@@ -6,12 +6,11 @@ import (
 )
 
 func main() {
-	var x, y IntSet
+	var x IntSet
 	x.Add(1)
-	x.Add(144)
-	x.Add(9)
+	x.Add(64)
+	x.Add(500)
+	fmt.Println(x)
 	fmt.Println(x.String())
-
-	y.Add(1)
-	fmt.Println(y.String())
+	fmt.Println(x.Len())
 }
