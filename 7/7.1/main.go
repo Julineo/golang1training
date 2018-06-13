@@ -34,6 +34,19 @@ func (d *WordsCounter) Write(p []byte) (int, error) {
 	return count, nil
 }
 
+type LinesCounter int
+
+func (c *LinesCounter) Write(p []byte) (int, error) {
+	count := 0
+	for _,v := range p {
+		if v == 10 {
+			count++
+		}
+	}
+	*c = LinesCounter(count + 1)
+	return count + 1, nil
+}
+
 func main() {
 	var c ByteCounter
 	c.Write([]byte("hello"))
@@ -46,5 +59,16 @@ func main() {
 
 	var d WordsCounter
 	d.Write([]byte("  I say 世界 to you"))
-	fmt.Println(d)	// "3", =
+	fmt.Println(d)	// "5"
+
+	var e LinesCounter
+	s := `line1
+		line2`
+	e.Write([]byte(s))
+	fmt.Println(e)
+
+	s = "line1"
+	e.Write([]byte(s))
+	fmt.Println(e)
+
 }
