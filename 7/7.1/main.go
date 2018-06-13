@@ -19,12 +19,19 @@ func (c *ByteCounter) Write(p []byte) (int, error) {
 type WordsCounter int
 
 func (d *WordsCounter) Write(p []byte) (int, error) {
-	cur := 0
-	for cur < len(p) {
-		r, size := utf8.DecodeRune(p[cur:])
-		fmt.Println(r, size)
+	i := 0
+	count := 0
+	prev := ' '
+	for i < len(p) {
+		curr, j := utf8.DecodeRune(p[i:])
+		if (prev != ' ' && curr == ' ') || (prev != ' ' && i + j == len(p)) {
+			count++
+		}
+		i += j
+		prev = curr
 	}
-	return 0, nil
+	*d = WordsCounter(count)
+	return count, nil
 }
 
 func main() {
@@ -38,6 +45,6 @@ func main() {
 	fmt.Println(c) // "12", = len("hello, Dolly")
 
 	var d WordsCounter
-	d.Write([]byte("  one two thre  e"))
-	fmt.Println(d)
+	d.Write([]byte("  I say 世界 to you"))
+	fmt.Println(d)	// "3", =
 }
