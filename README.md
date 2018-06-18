@@ -243,6 +243,15 @@ $ go run main.go
 6.2
 $ go run main.go
 
+7.1
+$ go run main.go
+
+7.2
+$ go run main.go
+
+7.3
+$ go test
+
 The Go Programming Language Exercises:
 
 chapter.exercise
