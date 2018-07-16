@@ -252,6 +252,10 @@ $ go run main.go
 7.3
 $ go test
 
+7.6
+$ go run tempflag.go -temp 273.15K
+
+
 The Go Programming Language Exercises:
 
 chapter.exercise
