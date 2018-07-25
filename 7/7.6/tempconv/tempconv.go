@@ -1,4 +1,4 @@
-// Package tempconv performs Celsius and Fahrenheit temperature computations.
+// Package tempconv performs Celsius, Fahrenheit and Kelvin temperature computations.
 package tempconv
 
 import (
@@ -15,7 +15,6 @@ func FToC(f Fahrenheit) Celsius { return Celsius((f - 32.0) * 5.0 / 9.0) }
 func KToC(k Kelvin) Celsius { return Celsius(k - 273.15) }
 
 func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
-
 /*
 //!+flagvalue
 package flag
@@ -50,10 +49,6 @@ func (f *celsiusFlag) Set(s string) error {
 	return fmt.Errorf("invalid temperature %q", s)
 }
 
-//!-celsiusFlag
-
-//!+CelsiusFlag
-
 // CelsiusFlag defines a Celsius flag with the specified name,
 // default value, and usage, and returns the address of the flag variable.
 // The flag argument must have a quantity and a unit, e.g., "100C".
@@ -63,4 +58,3 @@ func CelsiusFlag(name string, value Celsius, usage string) *Celsius {
 	return &f.Celsius
 }
 
-//!-CelsiusFlag
