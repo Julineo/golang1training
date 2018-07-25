@@ -21,10 +21,10 @@ type Track struct {
 
 func tracks() []*Track {
 	return []*Track{
-		{"Go", "Delilah", "From the Roots Up", 2012, length("3m38s")},
 		{"Go", "Moby", "Moby", 1992, length("3m37s")},
-		{"Go Ahead", "Alicia Keys", "As I Am", 2007, length("4m36s")},
 		{"Ready 2 Go", "Martin Solveig", "Smash", 2011, length("4m24s")},
+		{"Go Ahead", "Alicia Keys", "As I Am", 2007, length("4m36s")},
+		{"Go", "Delilah", "From the Roots Up", 2012, length("3m38s")},
 	}
 }
 
@@ -110,17 +110,31 @@ func useSortByColumns() []*Track {
 	return t
 }
 
-func useSortStable() []*Track {
+func useSortStableYear() []*Track {
 	t := tracks()
-	sort.Stable(byArtist(t))
-	sort.Stable(byTitle(t))
+	//sort.Stable(byArtist(t))
+	//sort.Stable(byTitle(t))
+	sort.Stable(byYear(t))
 	return t
 }
+
+func useSortStableTitle() []*Track {
+	t := tracks()
+	//sort.Stable(byArtist(t))
+	sort.Stable(byTitle(t))
+	//sort.Stable(byYear(t))
+	return t
+}
+
 
 func main() {
 	fmt.Println("By Title, Artist")
 	printTracks(useSortByColumns())
 
-	fmt.Println("\nUse sort.Stable. By Title, Artist")
-	printTracks(useSortStable())
+	fmt.Println("\nUse sort.Stable. By Year")
+	printTracks(useSortStableYear())
+
+	// Artist Moby goes first, so sort.Stable preserves previous oreder, which is not guaranteed in sort.Stable case
+	fmt.Println("\nUse sort.Stable. By Title")
+	printTracks(useSortStableTitle())
 }

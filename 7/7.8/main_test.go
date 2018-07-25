@@ -1,7 +1,9 @@
 package main
 
-import "testing"
-import "reflect"
+import (
+	"testing"
+	"reflect"
+	)
 
 func BenchmarkUseSortByColumns(b *testing.B) {
 	for i := 0; i < b.N; i++ {
