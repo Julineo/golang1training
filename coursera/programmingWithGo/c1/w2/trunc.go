@@ -23,3 +23,21 @@ func main() {
 	}
 	fmt.Println(strings.Split(str, ".")[0])
 }
+
+
+/*
+//versions:
+
+
+func main() {
+	fmt.Print("enter a floating point number: ")
+	var f float64
+	_, err := fmt.Scan(&f)
+	if err != nil {
+		panic(err)
+	}
+
+	i := int64(f)
+	fmt.Printf("truncated version: %v", i)
+}
+*/
