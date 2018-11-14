@@ -28,18 +28,29 @@ import (
 
 func main() {
 
-	fn := GenDisplaceFn(10, 2, 1)
+	a := prompt("acceleration")
+	v := prompt("velocity")
+	s := prompt("startPoint")
+
+	fn := genDisplaceFn(a, v, s)
 
 	fmt.Println(fn(3))
 	fmt.Println(fn(5))
 
 }
 
-func genDisplaceFn(a, v, s float64) func() float64  {
+func genDisplaceFn(a, v, s float64) func(float64) float64  {
 
 	return func(t float64) float64 {
-		return 0.232
+		return 0.5 * a * t * t + v * t + s
 	}
 }
 
-
+func prompt(s string) (f float64) {
+	fmt.Println("enter ", s)
+	_, err := fmt.Scan(&f)
+	if err != nil {
+		panic(err)
+	}
+	return
+}
