@@ -1,111 +1,88 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strings"
 )
 
-type Anymal interface {
-	Eat()
-	Move()
-	Speak()
+type animal interface {
+	Eat() string
+	Move() string
+	Speak() string
 }
 
 type cow struct {
-	eat   string
-	move  string
-	speak string
+	food   string
+	locomotion  string
+	noise string
 }
 
 type bird struct {
-	eat   string
-	move  string
-	speak string
+	food   string
+	locomotion  string
+	noise string
 }
 
 type snake struct {
-	eat   string
-	move  string
-	speak string
+	food   string
+	locomotion  string
+	noise string
 }
 
-func (a *cow) Eat() {
-	fmt.Println(a.eat)
-}
+func (a *cow) Eat() string { return a.food }
+func (a *cow) Move() string { return a.locomotion }
+func (a *cow) Speak() string { return a.noise }
 
-func (a *cow) Move() {
-	fmt.Println(a.move)
-}
+func (a *bird) Eat() string { return a.food }
+func (a *bird) Move() string { return a.locomotion }
+func (a *bird) Speak() string { return a.noise }
 
-func (a *cow) Speak() {
-	fmt.Println(a.speak)
-}
+func (a *snake) Eat() string { return a.food }
+func (a *snake) Move() string { return a.locomotion }
+func (a *snake) Speak() string { return a.noise }
 
 func main() {
 
-	scanner := bufio.NewScanner(os.Stdin)
-	cow := []string{"grass", "walk", "moo"}
-	bird := []string{"worms", "fly", "peep"}
-	snake := []string{"mice", "slither", "hsss"}
-	m := make(map[string]string)
+	m := make(map[string]animal)
+	var com, name, class string
 
+	loop:
 	for {
 		fmt.Println(">")
-		scanner.Scan()
-		v := scanner.Text()
-		//map for storing name and type of anymal
+		fmt.Scanf("%s %s %s", &com, &name, &class)
 
-		if strings.Split(v, " ")[0] == "newanymal" {
-			an := strings.Split(v, " ")[1]
-			at := strings.Split(v, " ")[2]
-			m[an] = at
+		switch com {
+		case "newanimal":
+			switch class {
+			case "cow":
+				m[name] = &cow{"grass", "walk", "moo"}
+				fmt.Println("Created it!")
+			case "bird":
+				m[name] = &bird{"worms", "fly", "peep"}
+				fmt.Println("Created it!")
+			case "snake":
+				m[name] = &snake{"mice", "slither", "hsss"}
+				fmt.Println("Created it!")
+			default:
+				fmt.Println("wrong animal")
+			}
 
-			fmt.Println("Created it!")
-			fmt.Println(m)
+		case "query":
+			switch class {
+			case "eat":
+				fmt.Println(m[name].Eat())
+			case "move":
+				fmt.Println(m[name].Move())
+			case "speak":
+				fmt.Println(m[name].Speak())
+			default:
+				fmt.Println("wrong action")
+			}
+
+		case "x":
+			break loop
+
+		default:
+			fmt.Println("wrong command!")
 		}
-
-		if strings.Split(v, " ")[0] == "query" {
-			an := strings.Split(v, " ")[1]
-			atype := m[an]
-			aq := strings.Split(v, " ")[2]
-			if atype == "cow" {
-				if aq == "eat" {
-					fmt.Println(cow[0])
-				}
-				if aq == "move" {
-					fmt.Println(cow[1])
-				}
-				if aq == "speak" {
-					fmt.Println(cow[2])
-				}
-			}
-
-			if atype == "bird" {
-				if aq == "eat" {
-					fmt.Println(bird[0])
-				}
-				if aq == "move" {
-					fmt.Println(bird[1])
-				}
-				if aq == "speak" {
-					fmt.Println(bird[2])
-				}
-			}
-
-			if atype == "snake" {
-				if aq == "eat" {
-					fmt.Println(snake[0])
-				}
-				if aq == "move" {
-					fmt.Println(snake[1])
-				}
-				if aq == "speak" {
-					fmt.Println(snake[2])
-				}
-			}
-		}
-
 	}
 }
