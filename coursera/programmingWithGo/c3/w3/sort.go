@@ -9,6 +9,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"sync"
 )
 
 func main() {
@@ -42,13 +43,128 @@ func main() {
 			sl4 = append(sl4, v)
 		}
 	}
-	fmt.Println(sl1)
-	sortSl(sl1)
+
+	//sorting 4 slices
+	var wg sync.WaitGroup
+
+	sortSl := func(sl []int) {
+		sort.Ints(sl)
+		fmt.Println(sl)
+		wg.Done()
+	}
+
+	wg.Add(4)
+	go sortSl(sl1)
+	go sortSl(sl2)
+	go sortSl(sl3)
+	go sortSl(sl4)
+
+	wg.Wait()
 	fmt.Println(sl)
-	fmt.Println(sl1)
+
+	//result slice
+	fmt.Println(mergeSl(mergeSl(sl1, sl2), mergeSl(sl3, sl4)))
+}
+
+func mergeSl(sl1, sl2 []int) []int {
+
+	i, j := 0, 0
+	res := []int{}
+
+	for i < len(sl1) && j < len(sl2) {
+		if sl1[i] > sl2[j] {
+			res = append(res, sl2[j])
+			j++
+		} else {
+			res = append(res, sl1[i])
+			i++
+		}
+	}
+
+	if i == len(sl1) {
+		for j < len(sl2) {
+			res = append(res, sl2[j])
+			j++
+		}
+	} else {
+		for i < len(sl1) {
+			res = append(res, sl1[i])
+			i++
+		}
+	}
+	return res
+}
+
+/*
+inplace version
+
+package main
+import (
+    "fmt"
+    "os"
+    "bufio"
+    "strings"
+    "strconv"
+    "sort"
+    "sync"
+    "bytes"
+)
+
+func main() {
+    scanner := bufio.NewScanner(os.Stdin)
+    fmt.Printf("Please enter integers space separated on one line\nints: ")
+    scanner.Scan()
+    ints := strings.Fields(scanner.Text())
+
+    isli := make([]int, 0, 1)
+
+    for i:=0;i<len(ints);i++ {
+        n,e := strconv.Atoi(ints[i])
+        if e != nil {
+            fmt.Printf("Error parsing input: %s\n", e)
+            return
+        }
+        isli = append(isli, n)
+    }
+
+    chunk := 4
+    delim := len(isli) / chunk
+    if len(isli) % chunk > 0 {delim++}
+
+    var wg sync.WaitGroup
+    var buf bytes.Buffer
+    wg.Add(chunk)
+
+
+    // Loop through and concurrently sort sections of the array
+    for i,x:=1,0; x<len(isli); x,i = x+delim, i+1 {
+        lb := x
+        rb := x + delim
+        if rb >= len(isli) {rb -= rb-len(isli)}
+        // Start a goroutine...
+        go csort(isli[lb:rb], &buf, &wg, i)
+    }
+
+    wg.Wait()
+    sort.Ints(isli)
+
+    fmt.Print(buf.String())
+    fmt.Print("Final Sorted array: ")
+    fmt.Println(isli)
 
 }
 
-func sortSl(sl []int) {
-	sort.Ints(sl)
+func csort(isli []int, buf *bytes.Buffer, wg *sync.WaitGroup, i int) {
+    var lbuf bytes.Buffer
+    //lbuf.WriteString(fmt.Sprintf("loop %d before: ", i))
+    //lbuf.WriteString(fmt.Sprintln(isli))
+
+    sort.Ints(isli)
+
+    //lbuf.WriteString(fmt.Sprintf("loop %d after: ", i))
+    lbuf.WriteString(fmt.Sprint("Interim sorted array: "))
+    lbuf.WriteString(fmt.Sprintln(isli))
+    buf.WriteString(lbuf.String())
+    wg.Done()
 }
+*/
