@@ -28,6 +28,9 @@ func (p philo) eat() {
 }
 
 func main() {
+	maxGoroutines := 2
+	host := make(chan struct{}, maxGoroutines)
+
 	cSticks := make([]*chopS, 5)
 	for i := 0; i < 5; i++ {
 		cSticks[i] = new(chopS)
@@ -40,7 +43,9 @@ func main() {
 	}
 
 	for i := 0; i < 5; i++ {
+		host <- struct{}{}
 		go philos[i].eat()
+		<-host
 	}
 
 	time.Sleep(3 * time.Second)
